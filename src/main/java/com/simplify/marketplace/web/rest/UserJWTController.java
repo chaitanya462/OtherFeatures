@@ -1,8 +1,12 @@
 package com.simplify.marketplace.web.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.simplify.marketplace.domain.User;
+import com.simplify.marketplace.repository.UserRepository;
 import com.simplify.marketplace.security.jwt.JWTFilter;
 import com.simplify.marketplace.security.jwt.TokenProvider;
+import com.simplify.marketplace.service.dto.AdminUserDTO;
+import com.simplify.marketplace.service.dto.UserDTO;
 import com.simplify.marketplace.web.rest.vm.LoginVM;
 import javax.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +28,16 @@ public class UserJWTController {
     private final TokenProvider tokenProvider;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final UserRepository userRepository;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public UserJWTController(
+        TokenProvider tokenProvider,
+        AuthenticationManagerBuilder authenticationManagerBuilder,
+        UserRepository userRepository
+    ) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/authenticate")

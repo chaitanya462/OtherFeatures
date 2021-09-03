@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -87,13 +88,14 @@ public class UserResource {
     private final UserService userService;
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -151,12 +153,18 @@ public class UserResource {
             existingUser = userRepository.findOneByEmailIgnoreCase(map.get("email"));
             if (!existingUser.get().isActivated()) {
                 if (existingUser.get().getActivationKey().equals(map.get("otp"))) {
+                    existingUser.get().setPassword(passwordEncoder.encode(map.get("otp")));
+
                     existingUser.get().setActivated(true);
                     check = existingUser.get().isActivated();
                     userRepository.save(existingUser.get());
                 }
             } else {
-                if (existingUser.get().getResetKey().equals(map.get("otp"))) check = true;
+                if (existingUser.get().getResetKey().equals(map.get("otp"))) {
+                    existingUser.get().setPassword(passwordEncoder.encode(map.get("otp")));
+                    System.out.println("\n\n\n\n 5\n\n\n\n");
+                    check = true;
+                }
             }
             return ResponseEntity
                 .created(new URI("/api/admin/users/authentiacte"))

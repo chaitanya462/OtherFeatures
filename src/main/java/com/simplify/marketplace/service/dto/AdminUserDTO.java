@@ -69,4 +69,17 @@ public class AdminUserDTO {
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "login='" + login + '\'' + ", email='" + email + '\'' + "}";
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getLogin() {
+        return login;
+    }
 }
