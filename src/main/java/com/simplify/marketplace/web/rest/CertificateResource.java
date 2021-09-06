@@ -79,8 +79,8 @@ public class CertificateResource {
         if (certificateDTO.getId() != null) {
             throw new BadRequestAlertException("A new certificate cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        certificateDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // certificateDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         certificateDTO.setUpdatedAt(LocalDate.now());
         certificateDTO.setCreatedAt(LocalDate.now());
         CertificateDTO result = certificateService.save(certificateDTO);
@@ -123,7 +123,7 @@ public class CertificateResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         certificateDTO.setUpdatedAt(LocalDate.now());
         CertificateDTO result = certificateService.save(certificateDTO);
         return ResponseEntity
@@ -159,7 +159,7 @@ public class CertificateResource {
         if (!certificateRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         certificateDTO.setUpdatedAt(LocalDate.now());
 
         Optional<CertificateDTO> result = certificateService.partialUpdate(certificateDTO);

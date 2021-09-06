@@ -64,8 +64,8 @@ public class ClientResource {
         if (clientDTO.getId() != null) {
             throw new BadRequestAlertException("A new client cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        clientDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // clientDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         clientDTO.setUpdatedAt(LocalDate.now());
         clientDTO.setCreatedAt(LocalDate.now());
         ClientDTO result = clientService.save(clientDTO);
@@ -101,7 +101,7 @@ public class ClientResource {
         if (!clientRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         clientDTO.setUpdatedAt(LocalDate.now());
         ClientDTO result = clientService.save(clientDTO);
         return ResponseEntity
@@ -137,7 +137,7 @@ public class ClientResource {
         if (!clientRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         clientDTO.setUpdatedAt(LocalDate.now());
 
         Optional<ClientDTO> result = clientService.partialUpdate(clientDTO);
