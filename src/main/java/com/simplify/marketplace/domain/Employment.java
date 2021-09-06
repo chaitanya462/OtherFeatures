@@ -76,7 +76,7 @@ public class Employment implements Serializable {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
-    @OneToMany(mappedBy = "employment")
+    @OneToMany(mappedBy = "employment", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "locationPrefrences", "employment" }, allowSetters = true)
     private Set<Location> locations = new HashSet<>();
