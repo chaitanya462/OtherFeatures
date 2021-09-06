@@ -78,8 +78,8 @@ public class EducationResource {
         if (educationDTO.getId() != null) {
             throw new BadRequestAlertException("A new education cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // educationDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         educationDTO.setUpdatedAt(LocalDate.now());
         educationDTO.setCreatedAt(LocalDate.now());
 
@@ -122,7 +122,7 @@ public class EducationResource {
         if (!educationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         educationDTO.setUpdatedAt(LocalDate.now());
         EducationDTO result = educationService.save(educationDTO);
 
@@ -159,7 +159,7 @@ public class EducationResource {
         if (!educationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         educationDTO.setUpdatedAt(LocalDate.now());
 
         Optional<EducationDTO> result = educationService.partialUpdate(educationDTO);

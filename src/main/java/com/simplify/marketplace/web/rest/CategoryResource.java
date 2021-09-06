@@ -64,8 +64,8 @@ public class CategoryResource {
         if (categoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // categoryDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         categoryDTO.setUpdatedAt(LocalDate.now());
         categoryDTO.setCreatedAt(LocalDate.now());
         CategoryDTO result = categoryService.save(categoryDTO);
@@ -101,7 +101,7 @@ public class CategoryResource {
         if (!categoryRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         categoryDTO.setUpdatedAt(LocalDate.now());
         CategoryDTO result = categoryService.save(categoryDTO);
         return ResponseEntity
@@ -137,7 +137,7 @@ public class CategoryResource {
         if (!categoryRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         categoryDTO.setUpdatedAt(LocalDate.now());
 
         Optional<CategoryDTO> result = categoryService.partialUpdate(categoryDTO);

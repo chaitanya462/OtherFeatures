@@ -78,8 +78,8 @@ public class EmploymentResource {
         if (employmentDTO.getId() != null) {
             throw new BadRequestAlertException("A new employment cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // employmentDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         employmentDTO.setUpdatedAt(LocalDate.now());
         employmentDTO.setCreatedAt(LocalDate.now());
 
@@ -123,7 +123,7 @@ public class EmploymentResource {
         if (!employmentRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         employmentDTO.setUpdatedAt(LocalDate.now());
         EmploymentDTO result = employmentService.save(employmentDTO);
         return ResponseEntity
@@ -159,7 +159,7 @@ public class EmploymentResource {
         if (!employmentRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         employmentDTO.setUpdatedAt(LocalDate.now());
 
         Optional<EmploymentDTO> result = employmentService.partialUpdate(employmentDTO);

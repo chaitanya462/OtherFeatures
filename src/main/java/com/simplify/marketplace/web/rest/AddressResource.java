@@ -65,8 +65,8 @@ public class AddressResource {
             throw new BadRequestAlertException("A new address cannot already have an ID", ENTITY_NAME, "idexists");
         }
 
-        // addressDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         addressDTO.setUpdatedAt(LocalDate.now());
         addressDTO.setCreatedAt(LocalDate.now());
         AddressDTO result = addressService.save(addressDTO);
@@ -102,7 +102,7 @@ public class AddressResource {
         if (!addressRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         addressDTO.setUpdatedAt(LocalDate.now());
         AddressDTO result = addressService.save(addressDTO);
         return ResponseEntity
@@ -139,7 +139,7 @@ public class AddressResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        // addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         addressDTO.setUpdatedAt(LocalDate.now());
         Optional<AddressDTO> result = addressService.partialUpdate(addressDTO);
 
