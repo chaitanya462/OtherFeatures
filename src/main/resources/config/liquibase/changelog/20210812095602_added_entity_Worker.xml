@@ -26,6 +26,28 @@
             <column name="primary_phone" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="gender" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+             <column name="status" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+             <column name="id_code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+             <column name="id_proof" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+             <column name="language" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+             <column name="email" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+             <column name="worker_location" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <column name="description" type="varchar(255)">
                 <constraints nullable="true" />
             </column>

@@ -1,6 +1,6 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.CertificateRepository;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.service.CertificateService;
@@ -10,6 +10,7 @@ import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -194,6 +195,13 @@ public class CertificateResource {
         log.debug("REST request to get Certificate : {}", id);
         Optional<CertificateDTO> certificateDTO = certificateService.findOne(id);
         return ResponseUtil.wrapOrNotFound(certificateDTO);
+    }
+
+    @GetMapping("/certificates/worker/{workerid}")
+    public List<Certificate> getworkerCertificate(@PathVariable Long workerid) {
+        log.debug("REST request to get Certificate : {}", workerid);
+        List<Certificate> certificate = certificateService.findOneWorker(workerid);
+        return certificate;
     }
 
     /**

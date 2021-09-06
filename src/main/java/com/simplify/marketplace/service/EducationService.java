@@ -2,6 +2,7 @@ package com.simplify.marketplace.service;
 
 import com.simplify.marketplace.domain.Education;
 import com.simplify.marketplace.service.dto.EducationDTO;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public interface EducationService {
      * @return the entity.
      */
     Optional<EducationDTO> findOne(Long id);
+    List<Education> findOneWorker(Long workerid);
 
     /**
      * Delete the "id" education.

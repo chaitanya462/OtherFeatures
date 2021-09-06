@@ -8,6 +8,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.CertificateService;
 import com.simplify.marketplace.service.dto.CertificateDTO;
 import com.simplify.marketplace.service.mapper.CertificateMapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -79,6 +80,13 @@ public class CertificateServiceImpl implements CertificateService {
     public Optional<CertificateDTO> findOne(Long id) {
         log.debug("Request to get Certificate : {}", id);
         return certificateRepository.findById(id).map(certificateMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Certificate> findOneWorker(Long id) {
+        log.debug("Request to get Certificate : {}", id);
+        return certificateRepository.findByWorkerId(id);
     }
 
     @Override

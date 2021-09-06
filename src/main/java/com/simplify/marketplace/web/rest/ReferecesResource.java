@@ -1,6 +1,6 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.ReferecesRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
@@ -180,6 +180,13 @@ public class ReferecesResource {
         Page<ReferecesDTO> page = referecesService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/refereces/worker/{workerid}")
+    public List<Refereces> getworkerReference(@PathVariable Long workerid) {
+        log.debug("REST request to get Reference : {}", workerid);
+        List<Refereces> refereces = referecesService.findOneWorker(workerid);
+        return refereces;
     }
 
     /**

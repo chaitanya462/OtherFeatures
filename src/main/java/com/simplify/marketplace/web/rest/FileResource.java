@@ -179,6 +179,13 @@ public class FileResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/files/worker/{workerid}")
+    public List<File> getworkerFile(@PathVariable Long workerid) {
+        log.debug("REST request to get Certificate : {}", workerid);
+        List<File> files = fileService.findOneWorker(workerid);
+        return files;
+    }
+
     /**
      * {@code GET  /files/:id} : get the "id" file.
      *

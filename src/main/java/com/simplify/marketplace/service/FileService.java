@@ -2,6 +2,7 @@ package com.simplify.marketplace.service;
 
 import com.simplify.marketplace.domain.File;
 import com.simplify.marketplace.service.dto.FileDTO;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public interface FileService {
      * @return the entity.
      */
     Optional<FileDTO> findOne(Long id);
+    List<File> findOneWorker(Long workerid);
 
     /**
      * Delete the "id" file.

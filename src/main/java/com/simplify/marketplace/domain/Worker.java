@@ -40,6 +40,9 @@ public class Worker implements Serializable {
     @Column(name = "primary_phone")
     private String primaryPhone;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "description")
     private String description;
 
@@ -48,6 +51,24 @@ public class Worker implements Serializable {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "id_proof")
+    private String idProof;
+
+    @Column(name = "id_code")
+    private String idCode;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "language")
+    private String language;
+
+    @Column(name = "worker_location")
+    private String workerLocation;
 
     @Column(name = "created_by")
     private String createdBy;

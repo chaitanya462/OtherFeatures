@@ -10,6 +10,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.dto.EmploymentDTO;
 import com.simplify.marketplace.service.mapper.EmploymentMapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -87,6 +88,13 @@ public class EmploymentServiceImpl implements EmploymentService {
     public Optional<EmploymentDTO> findOne(Long id) {
         log.debug("Request to get Employment : {}", id);
         return employmentRepository.findById(id).map(employmentMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Employment> findOneWorker(Long id) {
+        log.debug("Request to get Employment : {}", id);
+        return employmentRepository.findByWorkerId(id);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.simplify.marketplace.service.impl;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.domain.Refereces;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.ReferecesRepository;
@@ -8,6 +8,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.ReferecesService;
 import com.simplify.marketplace.service.dto.ReferecesDTO;
 import com.simplify.marketplace.service.mapper.ReferecesMapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -79,6 +80,13 @@ public class ReferecesServiceImpl implements ReferecesService {
     public Optional<ReferecesDTO> findOne(Long id) {
         log.debug("Request to get Refereces : {}", id);
         return referecesRepository.findById(id).map(referecesMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Refereces> findOneWorker(Long id) {
+        log.debug("Request to get References : {}", id);
+        return referecesRepository.findByWorkerId(id);
     }
 
     @Override

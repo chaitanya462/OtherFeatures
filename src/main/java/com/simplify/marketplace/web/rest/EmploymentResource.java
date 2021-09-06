@@ -1,6 +1,6 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.EmploymentRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
@@ -195,6 +195,13 @@ public class EmploymentResource {
         log.debug("REST request to get Employment : {}", id);
         Optional<EmploymentDTO> employmentDTO = employmentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(employmentDTO);
+    }
+
+    @GetMapping("/employments/worker/{workerid}")
+    public List<Employment> getworkerEmployment(@PathVariable Long workerid) {
+        log.debug("REST request to get employment : {}", workerid);
+        List<Employment> employments = employmentService.findOneWorker(workerid);
+        return employments;
     }
 
     /**

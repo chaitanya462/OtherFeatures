@@ -8,6 +8,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.FileService;
 import com.simplify.marketplace.service.dto.FileDTO;
 import com.simplify.marketplace.service.mapper.FileMapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -79,6 +80,13 @@ public class FileServiceImpl implements FileService {
     public Optional<FileDTO> findOne(Long id) {
         log.debug("Request to get File : {}", id);
         return fileRepository.findById(id).map(fileMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<File> findOneWorker(Long id) {
+        log.debug("Request to get Certificate : {}", id);
+        return fileRepository.findByWorkerId(id);
     }
 
     @Override

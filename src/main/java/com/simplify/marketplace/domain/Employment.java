@@ -40,6 +40,9 @@ public class Employment implements Serializable {
     @Column(name = "is_current")
     private Boolean isCurrent;
 
+    @Column(name = "employee_locations")
+    private String employeeLocations;
+
     @Column(name = "last_salary")
     private Integer lastSalary;
 

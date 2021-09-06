@@ -1,5 +1,6 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.SkillsMasterRepository;
 import com.simplify.marketplace.service.SkillsMasterService;
 import com.simplify.marketplace.service.UserService;
@@ -49,10 +50,12 @@ public class SkillsMasterResource {
         SkillsMasterService skillsMasterService,
         SkillsMasterRepository skillsMasterRepository,
         UserService userService
+        //SkillsRepository skillsRepository
     ) {
         this.skillsMasterService = skillsMasterService;
         this.skillsMasterRepository = skillsMasterRepository;
         this.userService = userService;
+        //this.skillsRepository=skillsRepository;
     }
 
     /**
@@ -178,6 +181,14 @@ public class SkillsMasterResource {
         log.debug("REST request to get SkillsMaster : {}", id);
         Optional<SkillsMasterDTO> skillsMasterDTO = skillsMasterService.findOne(id);
         return ResponseUtil.wrapOrNotFound(skillsMasterDTO);
+    }
+
+    @GetMapping("/skills-masters/worker/{workerid}")
+    public List<SkillsMaster> getworkerSkills(@PathVariable Long workerid) {
+        log.debug("REST request to get skillids : {}", workerid);
+        List<SkillsMaster> skillids = skillsMasterRepository.findByWorkers_Id(workerid);
+        for (SkillsMaster skillid : skillids) System.out.println(skillid.getId());
+        return skillids;
     }
 
     /**

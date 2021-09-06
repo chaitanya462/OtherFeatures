@@ -2,6 +2,7 @@ package com.simplify.marketplace.service;
 
 import com.simplify.marketplace.domain.Refereces;
 import com.simplify.marketplace.service.dto.ReferecesDTO;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public interface ReferecesService {
      * @return the entity.
      */
     Optional<ReferecesDTO> findOne(Long id);
+    List<Refereces> findOneWorker(Long workerid);
 
     /**
      * Delete the "id" refereces.

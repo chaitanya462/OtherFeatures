@@ -8,6 +8,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.PortfolioService;
 import com.simplify.marketplace.service.dto.PortfolioDTO;
 import com.simplify.marketplace.service.mapper.PortfolioMapper;
+import java.util.*;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -79,6 +80,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Optional<PortfolioDTO> findOne(Long id) {
         log.debug("Request to get Portfolio : {}", id);
         return portfolioRepository.findById(id).map(portfolioMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Portfolio> findOneWorker(Long id) {
+        log.debug("Request to get Portfolio : {}", id);
+        return portfolioRepository.findByWorkerId(id);
     }
 
     @Override

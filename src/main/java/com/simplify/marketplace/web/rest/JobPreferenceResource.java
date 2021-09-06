@@ -1,6 +1,6 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.JobPreferenceRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
@@ -199,6 +199,13 @@ public class JobPreferenceResource {
         log.debug("REST request to get JobPreference : {}", id);
         Optional<JobPreferenceDTO> jobPreferenceDTO = jobPreferenceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(jobPreferenceDTO);
+    }
+
+    @GetMapping("/job-preferences/worker/{workerid}")
+    public List<JobPreference> getworkerJobPreference(@PathVariable Long workerid) {
+        log.debug("REST request to get Certificate : {}", workerid);
+        List<JobPreference> jobPreferences = jobPreferenceService.findOneWorker(workerid);
+        return jobPreferences;
     }
 
     /**

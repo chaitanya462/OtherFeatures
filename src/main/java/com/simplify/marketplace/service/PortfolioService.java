@@ -2,6 +2,7 @@ package com.simplify.marketplace.service;
 
 import com.simplify.marketplace.domain.Portfolio;
 import com.simplify.marketplace.service.dto.PortfolioDTO;
+import java.util.*;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public interface PortfolioService {
      * @return the entity.
      */
     Optional<PortfolioDTO> findOne(Long id);
+    List<Portfolio> findOneWorker(Long workerid);
 
     /**
      * Delete the "id" portfolio.

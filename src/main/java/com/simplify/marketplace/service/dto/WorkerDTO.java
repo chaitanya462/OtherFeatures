@@ -26,6 +26,20 @@ public class WorkerDTO implements Serializable {
     @NotNull
     private String lastName;
 
+    private String email;
+
+    private String gender;
+
+    private String language;
+
+    private String status;
+
+    private String idCode;
+
+    private String idProof;
+
+    private String workerLocation;
+
     private String primaryPhone;
 
     private String description;

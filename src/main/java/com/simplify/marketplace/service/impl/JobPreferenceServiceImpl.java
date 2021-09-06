@@ -1,6 +1,6 @@
 package com.simplify.marketplace.service.impl;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.domain.JobPreference;
 import com.simplify.marketplace.repository.CategoryRepository;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
@@ -11,6 +11,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.JobPreferenceService;
 import com.simplify.marketplace.service.dto.JobPreferenceDTO;
 import com.simplify.marketplace.service.mapper.JobPreferenceMapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -91,6 +92,13 @@ public class JobPreferenceServiceImpl implements JobPreferenceService {
     public Optional<JobPreferenceDTO> findOne(Long id) {
         log.debug("Request to get JobPreference : {}", id);
         return jobPreferenceRepository.findById(id).map(jobPreferenceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<JobPreference> findOneWorker(Long id) {
+        log.debug("Request to get JobPreference : {}", id);
+        return jobPreferenceRepository.findByWorkerId(id);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.EducationService;
 import com.simplify.marketplace.service.dto.EducationDTO;
 import com.simplify.marketplace.service.mapper.EducationMapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -84,6 +85,13 @@ public class EducationServiceImpl implements EducationService {
     public Optional<EducationDTO> findOne(Long id) {
         log.debug("Request to get Education : {}", id);
         return educationRepository.findById(id).map(educationMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Education> findOneWorker(Long id) {
+        log.debug("Request to get Education : {}", id);
+        return educationRepository.findByWorkerId(id);
     }
 
     @Override

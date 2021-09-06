@@ -1,15 +1,17 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.domain.ElasticWorker;
-import com.simplify.marketplace.domain.Worker;
-import com.simplify.marketplace.repository.WorkerRepository;
+import com.simplify.marketplace.repository.*;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
 import com.simplify.marketplace.service.dto.WorkerDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
+import java.lang.Exception;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,10 +59,18 @@ public class WorkerResource {
 
     private final WorkerRepository workerRepository;
 
-    public WorkerResource(WorkerService workerService, WorkerRepository workerRepository, UserService userService) {
+    private final FileRepository fileRepository;
+
+    public WorkerResource(
+        WorkerService workerService,
+        WorkerRepository workerRepository,
+        UserService userService,
+        FileRepository fileRepository
+    ) {
         this.workerService = workerService;
         this.workerRepository = workerRepository;
         this.userService = userService;
+        this.fileRepository = fileRepository;
     }
 
     /**
@@ -100,6 +110,32 @@ public class WorkerResource {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
+    // @PostMapping("/workers/create")
+    // public ResponseEntity<Boolean> createProfile(@RequestBody Map<String,Object> profile){
+    //     Worker worker=(Worker)profile.get("worker");
+    //     Boolean check=false;
+    //     if (worker.getId() != null) {
+    //         throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
+    //     }
+    //     ArrayList<File> files;
+    //     try{
+    //         worker=workerRepository.save(worker);
+    //         files=(File)profile.get("files");
+    //         for(File file:files){
+    //             file.setWorker(worker);
+    //             fileRepository.save(file);
+    //             check=true;
+    //         }
+    //     }
+    //     catch(Exception e){
+    //         System.out.println("\n\n\n"+e.printstacktrace()+"\n\n\n");
+    //     }
+    //     return ResponseEntity
+    //         .created(new URI("/api/workers/create" + worker.getId()))
+    //         .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, worker.getId().toString()))
+    //         .body(check);
+    // }
 
     /**
      * {@code PUT  /workers/:id} : Updates an existing worker.

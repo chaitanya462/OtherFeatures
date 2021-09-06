@@ -1,6 +1,6 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.PortfolioRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
@@ -181,6 +181,13 @@ public class PortfolioResource {
         Page<PortfolioDTO> page = portfolioService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/portfolios/worker/{workerid}")
+    public List<Portfolio> getworkerPortfolio(@PathVariable Long workerid) {
+        log.debug("REST request to get Portfolio : {}", workerid);
+        List<Portfolio> portfolios = portfolioService.findOneWorker(workerid);
+        return portfolios;
     }
 
     /**
