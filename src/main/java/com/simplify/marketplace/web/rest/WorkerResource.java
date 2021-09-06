@@ -86,8 +86,8 @@ public class WorkerResource {
         if (workerDTO.getId() != null) {
             throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        workerDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // workerDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setCreatedAt(LocalDate.now());
         WorkerDTO result = workerService.save(workerDTO);
@@ -164,7 +164,7 @@ public class WorkerResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
         workerDTO.setUpdatedAt(LocalDate.now());
-        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         WorkerDTO result = workerService.save(workerDTO);
         return ResponseEntity
             .ok()
@@ -200,7 +200,7 @@ public class WorkerResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
         workerDTO.setUpdatedAt(LocalDate.now());
-        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
 
         return ResponseUtil.wrapOrNotFound(

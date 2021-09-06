@@ -69,8 +69,8 @@ public class LocationPrefrenceResource {
         if (locationPrefrenceDTO.getId() != null) {
             throw new BadRequestAlertException("A new locationPrefrence cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        locationPrefrenceDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // locationPrefrenceDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         locationPrefrenceDTO.setCreatedAt(LocalDate.now());
         LocationPrefrenceDTO result = locationPrefrenceService.save(locationPrefrenceDTO);
@@ -106,7 +106,7 @@ public class LocationPrefrenceResource {
         if (!locationPrefrenceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         LocationPrefrenceDTO result = locationPrefrenceService.save(locationPrefrenceDTO);
         return ResponseEntity
@@ -142,7 +142,7 @@ public class LocationPrefrenceResource {
         if (!locationPrefrenceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         Optional<LocationPrefrenceDTO> result = locationPrefrenceService.partialUpdate(locationPrefrenceDTO);
 

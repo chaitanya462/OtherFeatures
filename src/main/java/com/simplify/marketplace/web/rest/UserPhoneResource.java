@@ -64,8 +64,8 @@ public class UserPhoneResource {
         if (userPhoneDTO.getId() != null) {
             throw new BadRequestAlertException("A new userPhone cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        userPhoneDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userPhoneDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         userPhoneDTO.setUpdatedAt(LocalDate.now());
         userPhoneDTO.setCreatedAt(LocalDate.now());
         UserPhoneDTO result = userPhoneService.save(userPhoneDTO);
@@ -101,7 +101,7 @@ public class UserPhoneResource {
         if (!userPhoneRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         userPhoneDTO.setUpdatedAt(LocalDate.now());
         UserPhoneDTO result = userPhoneService.save(userPhoneDTO);
         return ResponseEntity
@@ -137,7 +137,7 @@ public class UserPhoneResource {
         if (!userPhoneRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         userPhoneDTO.setUpdatedAt(LocalDate.now());
         Optional<UserPhoneDTO> result = userPhoneService.partialUpdate(userPhoneDTO);
 

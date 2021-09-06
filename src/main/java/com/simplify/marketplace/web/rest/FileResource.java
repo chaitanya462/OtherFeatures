@@ -76,8 +76,8 @@ public class FileResource {
         if (fileDTO.getId() != null) {
             throw new BadRequestAlertException("A new file cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        fileDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // fileDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fileDTO.setUpdatedAt(LocalDate.now());
         fileDTO.setCreatedAt(LocalDate.now());
 
@@ -118,7 +118,7 @@ public class FileResource {
         if (!fileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fileDTO.setUpdatedAt(LocalDate.now());
 
         FileDTO result = fileService.save(fileDTO);
@@ -155,7 +155,7 @@ public class FileResource {
         if (!fileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fileDTO.setUpdatedAt(LocalDate.now());
         Optional<FileDTO> result = fileService.partialUpdate(fileDTO);
 

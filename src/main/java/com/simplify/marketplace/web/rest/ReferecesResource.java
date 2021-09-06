@@ -79,8 +79,8 @@ public class ReferecesResource {
         if (referecesDTO.getId() != null) {
             throw new BadRequestAlertException("A new refereces cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        referecesDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // referecesDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         referecesDTO.setUpdatedAt(LocalDate.now());
         referecesDTO.setCreatedAt(LocalDate.now());
         ReferecesDTO result = referecesService.save(referecesDTO);
@@ -122,7 +122,7 @@ public class ReferecesResource {
         if (!referecesRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         referecesDTO.setUpdatedAt(LocalDate.now());
         ReferecesDTO result = referecesService.save(referecesDTO);
         return ResponseEntity
@@ -158,7 +158,7 @@ public class ReferecesResource {
         if (!referecesRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         referecesDTO.setUpdatedAt(LocalDate.now());
         Optional<ReferecesDTO> result = referecesService.partialUpdate(referecesDTO);
 

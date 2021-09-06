@@ -64,7 +64,7 @@ public class OtpResource {
         if (otpDTO.getId() != null) {
             throw new BadRequestAlertException("A new otp cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        otpDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // otpDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
         otpDTO.setCreatedAt(LocalDate.now());
         OtpDTO result = otpService.save(otpDTO);
         return ResponseEntity

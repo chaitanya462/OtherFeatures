@@ -65,8 +65,8 @@ public class UserEmailResource {
         if (userEmailDTO.getId() != null) {
             throw new BadRequestAlertException("A new userEmail cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        userEmailDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userEmailDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         userEmailDTO.setUpdatedAt(LocalDate.now());
         userEmailDTO.setCreatedAt(LocalDate.now());
         UserEmailDTO result = userEmailService.save(userEmailDTO);
@@ -102,7 +102,7 @@ public class UserEmailResource {
         if (!userEmailRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         userEmailDTO.setUpdatedAt(LocalDate.now());
 
         UserEmailDTO result = userEmailService.save(userEmailDTO);
@@ -139,7 +139,7 @@ public class UserEmailResource {
         if (!userEmailRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         userEmailDTO.setUpdatedAt(LocalDate.now());
 
         Optional<UserEmailDTO> result = userEmailService.partialUpdate(userEmailDTO);
