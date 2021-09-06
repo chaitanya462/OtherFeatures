@@ -93,7 +93,7 @@ public class WorkerResource {
         WorkerDTO result = workerService.save(workerDTO);
         ElasticWorker ew = new ElasticWorker();
 
-        Worker arr = workerRepo.findOneWithEagerRelationships(result.getId()).get();
+        Worker arr = workerRepository.findOneWithEagerRelationships(result.getId()).get();
         ew.setId(result.getId().toString());
         ew.setFirstName(arr.getFirstName());
         ew.setMiddleName(arr.getMiddleName());
