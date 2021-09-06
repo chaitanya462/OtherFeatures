@@ -64,7 +64,7 @@ public class OtpAttemptResource {
         if (otpAttemptDTO.getId() != null) {
             throw new BadRequestAlertException("A new otpAttempt cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // otpAttemptDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        otpAttemptDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
         otpAttemptDTO.setCreatedAt(LocalDate.now());
         OtpAttemptDTO result = otpAttemptService.save(otpAttemptDTO);
         return ResponseEntity

@@ -82,8 +82,8 @@ public class JobPreferenceResource {
         if (jobPreferenceDTO.getId() != null) {
             throw new BadRequestAlertException("A new jobPreference cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // jobPreferenceDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         jobPreferenceDTO.setUpdatedAt(LocalDate.now());
         jobPreferenceDTO.setCreatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
@@ -127,7 +127,7 @@ public class JobPreferenceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        // jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         jobPreferenceDTO.setUpdatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
         return ResponseEntity
@@ -163,7 +163,7 @@ public class JobPreferenceResource {
         if (!jobPreferenceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         jobPreferenceDTO.setUpdatedAt(LocalDate.now());
 
         Optional<JobPreferenceDTO> result = jobPreferenceService.partialUpdate(jobPreferenceDTO);

@@ -64,8 +64,8 @@ public class FieldValueResource {
         if (fieldValueDTO.getId() != null) {
             throw new BadRequestAlertException("A new fieldValue cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // fieldValueDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // fieldValueDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldValueDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldValueDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fieldValueDTO.setUpdatedAt(LocalDate.now());
         fieldValueDTO.setCreatedAt(LocalDate.now());
         FieldValueDTO result = fieldValueService.save(fieldValueDTO);
@@ -101,7 +101,7 @@ public class FieldValueResource {
         if (!fieldValueRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // fieldValueDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldValueDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fieldValueDTO.setUpdatedAt(LocalDate.now());
 
         FieldValueDTO result = fieldValueService.save(fieldValueDTO);
@@ -138,7 +138,7 @@ public class FieldValueResource {
         if (!fieldValueRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // fieldValueDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldValueDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fieldValueDTO.setUpdatedAt(LocalDate.now());
 
         Optional<FieldValueDTO> result = fieldValueService.partialUpdate(fieldValueDTO);

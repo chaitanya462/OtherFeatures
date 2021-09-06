@@ -68,8 +68,8 @@ public class SubjectMasterResource {
         if (subjectMasterDTO.getId() != null) {
             throw new BadRequestAlertException("A new subjectMaster cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // subjectMasterDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         subjectMasterDTO.setUpdatedAt(LocalDate.now());
         subjectMasterDTO.setCreatedAt(LocalDate.now());
         SubjectMasterDTO result = subjectMasterService.save(subjectMasterDTO);
@@ -105,7 +105,7 @@ public class SubjectMasterResource {
         if (!subjectMasterRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         subjectMasterDTO.setUpdatedAt(LocalDate.now());
         SubjectMasterDTO result = subjectMasterService.save(subjectMasterDTO);
         return ResponseEntity
@@ -141,7 +141,7 @@ public class SubjectMasterResource {
         if (!subjectMasterRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         subjectMasterDTO.setUpdatedAt(LocalDate.now());
 
         Optional<SubjectMasterDTO> result = subjectMasterService.partialUpdate(subjectMasterDTO);

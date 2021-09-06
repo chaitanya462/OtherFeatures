@@ -78,8 +78,8 @@ public class PortfolioResource {
         if (portfolioDTO.getId() != null) {
             throw new BadRequestAlertException("A new portfolio cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // portfolioDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        // portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         portfolioDTO.setUpdatedAt(LocalDate.now());
         portfolioDTO.setCreatedAt(LocalDate.now());
         PortfolioDTO result = portfolioService.save(portfolioDTO);
@@ -121,7 +121,7 @@ public class PortfolioResource {
         if (!portfolioRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         portfolioDTO.setUpdatedAt(LocalDate.now());
 
         PortfolioDTO result = portfolioService.save(portfolioDTO);
@@ -158,7 +158,7 @@ public class PortfolioResource {
         if (!portfolioRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         portfolioDTO.setUpdatedAt(LocalDate.now());
 
         Optional<PortfolioDTO> result = portfolioService.partialUpdate(portfolioDTO);
