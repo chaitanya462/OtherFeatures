@@ -1,10 +1,18 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,13 +24,18 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 
 @Document(indexName = "elasticsearchworkerindex")
-public class ElasticWorker {
+//@Mapping(mappingPath = "/ElasticSearch/mappings/mapping.json")
+public class ElasticWorker implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @NotNull
@@ -39,56 +52,46 @@ public class ElasticWorker {
     @Column(name = "primary_phone")
     private String primaryPhone;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    private LocalDate dateOfBirth;
+
     @Column(name = "description")
     private String description;
-
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
 
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
     @JsonIgnoreProperties(value = { "userEmails", "userPhones", "addresses" }, allowSetters = true)
     @OneToOne
+    //    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(unique = true)
     private CustomUser customUser;
 
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
-    private Set<File> files = new HashSet<>();
-
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
-    private Set<Education> educations = new HashSet<>();
-
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
-    private Set<Certificate> certificates = new HashSet<>();
-
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "locations", "company", "worker" }, allowSetters = true)
-    private Set<Employment> employments = new HashSet<>();
-
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
-    private Set<Portfolio> portfolios = new HashSet<>();
-
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
-    private Set<Refereces> refereces = new HashSet<>();
-
-    @OneToMany(mappedBy = "worker")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "locationPrefrences", "fieldValues", "subCategory", "worker" }, allowSetters = true)
-    private Set<JobPreference> jobPreferences = new HashSet<>();
-
     @ManyToMany
+    //    @NotFound(action = NotFoundAction.IGNORE)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinTable(
         name = "rel_worker__skill",
@@ -97,6 +100,80 @@ public class ElasticWorker {
     )
     @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
     private Set<SkillsMaster> skills = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker", fetch = FetchType.EAGER)
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    private Set<File> files = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    private Set<Education> educations = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    private Set<Certificate> certificates = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "locations", "worker" }, allowSetters = true)
+    private Set<Employment> employments = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    private Set<Portfolio> portfolios = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    private Set<Refereces> refereces = new HashSet<>();
+
+    @OneToMany(mappedBy = "worker")
+    //    @NotFound(action = NotFoundAction.IGNORE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    private Set<JobPreference> jobPreferences = new HashSet<>();
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     public String getId() {
         return id;
@@ -178,12 +255,34 @@ public class ElasticWorker {
         this.files = files;
     }
 
+    public ElasticWorker addFile(File file) {
+        this.files.add(file);
+        return this;
+    }
+
+    public ElasticWorker removeFile(File file) {
+        this.files.remove(file);
+        file.setWorker(null);
+        return this;
+    }
+
     public Set<Education> getEducations() {
         return educations;
     }
 
     public void setEducations(Set<Education> educations) {
         this.educations = educations;
+    }
+
+    public ElasticWorker addEducation(Education education) {
+        this.educations.add(education);
+        return this;
+    }
+
+    public ElasticWorker removeEducation(Education education) {
+        this.educations.remove(education);
+        education.setWorker(null);
+        return this;
     }
 
     public Set<Certificate> getCertificates() {
@@ -194,12 +293,34 @@ public class ElasticWorker {
         this.certificates = certificates;
     }
 
+    public ElasticWorker addCertificate(Certificate certificate) {
+        this.certificates.add(certificate);
+        return this;
+    }
+
+    public ElasticWorker removeCertificate(Certificate certificate) {
+        this.certificates.remove(certificate);
+        certificate.setWorker(null);
+        return this;
+    }
+
     public Set<Employment> getEmployments() {
         return employments;
     }
 
     public void setEmployments(Set<Employment> employments) {
         this.employments = employments;
+    }
+
+    public ElasticWorker addEmployment(Employment employment) {
+        this.employments.add(employment);
+        return this;
+    }
+
+    public ElasticWorker removeEmployment(Employment employment) {
+        this.employments.remove(employment);
+        employment.setWorker(null);
+        return this;
     }
 
     public Set<Portfolio> getPortfolios() {
@@ -210,6 +331,17 @@ public class ElasticWorker {
         this.portfolios = portfolios;
     }
 
+    public ElasticWorker addPortfolio(Portfolio portfolio) {
+        this.portfolios.add(portfolio);
+        return this;
+    }
+
+    public ElasticWorker removePortfolio(Portfolio portfolio) {
+        this.portfolios.remove(portfolio);
+        portfolio.setWorker(null);
+        return this;
+    }
+
     public Set<Refereces> getRefereces() {
         return refereces;
     }
@@ -218,12 +350,34 @@ public class ElasticWorker {
         this.refereces = refereces;
     }
 
+    public ElasticWorker addRefereces(Refereces refereces) {
+        this.refereces.add(refereces);
+        return this;
+    }
+
+    public ElasticWorker removeRefereces(Refereces refereces) {
+        this.refereces.remove(refereces);
+        refereces.setWorker(null);
+        return this;
+    }
+
     public Set<JobPreference> getJobPreferences() {
         return jobPreferences;
     }
 
     public void setJobPreferences(Set<JobPreference> jobPreferences) {
         this.jobPreferences = jobPreferences;
+    }
+
+    public ElasticWorker addJobPreference(JobPreference jobPreference) {
+        this.jobPreferences.add(jobPreference);
+        return this;
+    }
+
+    public ElasticWorker removeJobPreference(JobPreference jobPreference) {
+        this.jobPreferences.remove(jobPreference);
+        jobPreference.setWorker(null);
+        return this;
     }
 
     public Set<SkillsMaster> getSkills() {
