@@ -64,4 +64,49 @@ public class ESearchWorker {
     public ArrayList<ElasticWorker> searchBylocationType(@PathVariable String name) {
         return workerRepo.searchBylocationType(name);
     }
+
+    @GetMapping("/searchByfiltersOr/{Category}/{SubCategory}/{location}/{searchText}")
+    public ArrayList<ElasticWorker> searchByfiltersOr(
+        @PathVariable("Category") String Category,
+        @PathVariable("SubCategory") String subcategory,
+        @PathVariable("location") String location,
+        @PathVariable("searchText") String searchText
+    ) {
+        return workerRepo.allfiltersOr(Category, subcategory, location, searchText);
+    }
+
+    @GetMapping("/searchByfilters/{Category}/{SubCategory}/{location}/{searchText}")
+    public ArrayList<ElasticWorker> searchByfilters(
+        @PathVariable("Category") String Category,
+        @PathVariable("SubCategory") String subcategory,
+        @PathVariable("location") String location,
+        @PathVariable("searchText") String searchText
+    ) {
+        return workerRepo.allfilters(Category, subcategory, location, searchText);
+    }
+
+    @GetMapping("/searchByCategoryText/{Category}/{searchText}")
+    public ArrayList<ElasticWorker> searchByCategoryText(
+        @PathVariable("Category") String Category,
+        @PathVariable("searchText") String searchText
+    ) {
+        return workerRepo.searchByCategoryText(Category, searchText);
+    }
+
+    @GetMapping("/searchByCategorySubText/{Category}/{SubCategory}/{searchText}")
+    public ArrayList<ElasticWorker> searchByCategorySubText(
+        @PathVariable("Category") String Category,
+        @PathVariable("SubCategory") String subcategory,
+        @PathVariable("searchText") String searchText
+    ) {
+        return workerRepo.searchByCategorySubText(Category, subcategory, searchText);
+    }
+
+    @GetMapping("/searchByfilters/{location}/{searchText}")
+    public ArrayList<ElasticWorker> searchByLocationText(
+        @PathVariable("location") String location,
+        @PathVariable("searchText") String searchText
+    ) {
+        return workerRepo.searchByLocationText(searchText, location);
+    }
 }

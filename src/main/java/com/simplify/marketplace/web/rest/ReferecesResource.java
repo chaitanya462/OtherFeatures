@@ -122,7 +122,6 @@ public class ReferecesResource {
         if (!referecesRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         referecesDTO.setUpdatedAt(LocalDate.now());
 
         Refereces prevRefereces = referecesRepository.findById(referecesDTO.getId()).get();

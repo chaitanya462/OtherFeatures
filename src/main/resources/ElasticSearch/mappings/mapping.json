@@ -1,0 +1,16 @@
+{
+  "_routing": {
+    "required": true
+  },
+  "properties": {
+    "name": {
+      "type": "text"
+    },
+    "city": {
+      "type": "text"
+    },
+    "date": {
+      "type": "date"
+    }
+  }
+}

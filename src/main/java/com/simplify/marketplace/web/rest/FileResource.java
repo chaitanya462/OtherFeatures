@@ -121,7 +121,6 @@ public class FileResource {
         if (!fileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         fileDTO.setUpdatedAt(LocalDate.now());
 
         //        FileDTO result = fileService.save(fileDTO);

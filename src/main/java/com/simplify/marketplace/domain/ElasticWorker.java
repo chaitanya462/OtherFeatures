@@ -7,49 +7,39 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Mapping;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Document(indexName = "elasticsearchworkerindex")
 //@Mapping(mappingPath = "/ElasticSearch/mappings/mapping.json")
+//@Setting(settingPath = "/ElasticSearch/settings/setting.json")
 public class ElasticWorker implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     @Id
     private String id;
 
     @NotNull
-    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "middle_name")
     private String middleName;
 
     @NotNull
-    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "primary_phone")
     private String primaryPhone;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -58,88 +48,69 @@ public class ElasticWorker implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     private LocalDate dateOfBirth;
 
-    @Column(name = "description")
     private String description;
 
-    @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "created_by")
     private String createdBy;
+
+    private String Category;
+
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String category) {
+        Category = category;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
-    @Column(name = "created_at")
     private LocalDate createdAt;
 
-    @Column(name = "updated_by")
     private String updatedBy;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
-    @Column(name = "updated_at")
     private LocalDate updatedAt;
 
     @JsonIgnoreProperties(value = { "userEmails", "userPhones", "addresses" }, allowSetters = true)
     @OneToOne
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @JoinColumn(unique = true)
-    private CustomUser customUser;
+    private User user;
 
-    @ManyToMany
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JoinTable(
-        name = "rel_worker__skill",
-        joinColumns = @JoinColumn(name = "worker_id"),
-        inverseJoinColumns = @JoinColumn(name = "skill_id")
-    )
     @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
     private Set<SkillsMaster> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker", fetch = FetchType.EAGER)
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<File> files = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<Education> educations = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<Certificate> certificates = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "locations", "worker" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true) // value = { "locations","worker" }
     private Set<Employment> employments = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<Portfolio> portfolios = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<Refereces> refereces = new HashSet<>();
 
-    @OneToMany(mappedBy = "worker")
-    //    @NotFound(action = NotFoundAction.IGNORE)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<JobPreference> jobPreferences = new HashSet<>();
 
@@ -239,12 +210,12 @@ public class ElasticWorker implements Serializable {
         this.isActive = isActive;
     }
 
-    public CustomUser getCustomUser() {
-        return customUser;
+    public User getCustomUser() {
+        return user;
     }
 
-    public void setCustomUser(CustomUser customUser) {
-        this.customUser = customUser;
+    public void setCustomUser(User user) {
+        this.user = user;
     }
 
     public Set<File> getFiles() {
@@ -397,7 +368,7 @@ public class ElasticWorker implements Serializable {
         String description,
         LocalDate dateOfBirth,
         Boolean isActive,
-        CustomUser customUser,
+        User user,
         Set<File> files,
         Set<Education> educations,
         Set<Certificate> certificates,
@@ -416,7 +387,7 @@ public class ElasticWorker implements Serializable {
         this.description = description;
         this.dateOfBirth = dateOfBirth;
         this.isActive = isActive;
-        this.customUser = customUser;
+        this.user = user;
         this.files = files;
         this.educations = educations;
         this.certificates = certificates;
