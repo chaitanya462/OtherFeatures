@@ -1,11 +1,17 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.*;
-import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.Certificate;
+import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.service.CertificateService;
+import com.simplify.marketplace.service.EducationService;
+import com.simplify.marketplace.service.EmploymentService;
+import com.simplify.marketplace.service.JobPreferenceService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
 import com.simplify.marketplace.service.dto.WorkerDTO;
+import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.lang.Exception;
 import java.net.URI;
@@ -17,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -40,7 +47,17 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class WorkerResource {
 
+    private CategoryRepository categoryRepository;
+    private JobPreferenceRepository jobPreferenceRepository;
+    private EducationRepository educationRepository;
+    private CertificateRepository certificateRepository;
+    private EmploymentRepository employmentRepository;
+    private final WorkerMapper workerMapper;
+
     private UserService userService;
+    private JobPreferenceService jobPreferenceService;
+    private EmploymentService employmentService;
+    private EducationService educationService;
 
     @Autowired
     RabbitTemplate rabbit_msg;
@@ -65,12 +82,30 @@ public class WorkerResource {
         WorkerService workerService,
         WorkerRepository workerRepository,
         UserService userService,
-        FileRepository fileRepository
+        FileRepository fileRepository,
+        CategoryRepository categoryRepository,
+        JobPreferenceRepository jobPreferenceRepositor,
+        EducationRepository educationRepository,
+        CertificateRepository certificateRepository,
+        EmploymentRepository employmentRepository,
+        WorkerMapper workerMapper,
+        JobPreferenceService jobPreferenceService,
+        EducationService educationService,
+        EmploymentService employmentService
     ) {
         this.workerService = workerService;
         this.workerRepository = workerRepository;
         this.userService = userService;
         this.fileRepository = fileRepository;
+        this.categoryRepository = categoryRepository;
+        this.jobPreferenceRepository = jobPreferenceRepository;
+        this.educationRepository = educationRepository;
+        this.certificateRepository = certificateRepository;
+        this.employmentRepository = employmentRepository;
+        this.workerMapper = workerMapper;
+        this.jobPreferenceService = jobPreferenceService;
+        this.educationService = educationService;
+        this.employmentService = employmentService;
     }
 
     /**
@@ -110,32 +145,6 @@ public class WorkerResource {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
-
-    // @PostMapping("/workers/create")
-    // public ResponseEntity<Boolean> createProfile(@RequestBody Map<String,Object> profile){
-    //     Worker worker=(Worker)profile.get("worker");
-    //     Boolean check=false;
-    //     if (worker.getId() != null) {
-    //         throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
-    //     }
-    //     ArrayList<File> files;
-    //     try{
-    //         worker=workerRepository.save(worker);
-    //         files=(File)profile.get("files");
-    //         for(File file:files){
-    //             file.setWorker(worker);
-    //             fileRepository.save(file);
-    //             check=true;
-    //         }
-    //     }
-    //     catch(Exception e){
-    //         System.out.println("\n\n\n"+e.printstacktrace()+"\n\n\n");
-    //     }
-    //     return ResponseEntity
-    //         .created(new URI("/api/workers/create" + worker.getId()))
-    //         .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, worker.getId().toString()))
-    //         .body(check);
-    // }
 
     /**
      * {@code PUT  /workers/:id} : Updates an existing worker.
@@ -243,6 +252,38 @@ public class WorkerResource {
         log.debug("REST request to get Worker : {}", id);
         Optional<WorkerDTO> workerDTO = workerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(workerDTO);
+    }
+
+    @GetMapping("/workers/profile/{id}")
+    public JSONObject getProfile(@PathVariable Long id) {
+        log.debug("REST request to get Worker : {}", id);
+        JSONObject obj = new JSONObject();
+        Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
+        obj.put("worker", workerService.findOne(id).get());
+        if (jobPreferenceService.findOneWorker(id) != null) {
+            JSONArray job = new JSONArray();
+            JSONArray categArray = new JSONArray();
+            for (JobPreference temp : jobPreferenceService.findOneWorker(id)) {
+                job.add(temp);
+                categArray.add(temp.getSubCategory());
+            }
+            obj.put("jobPreference", job);
+            obj.put("category", categArray);
+        }
+        if (educationService.findOneWorker(id) != null) {
+            JSONArray educaArray = new JSONArray();
+            for (Education temp : educationService.findOneWorker(id)) educaArray.add(temp);
+            obj.put("Education", educaArray);
+        }
+        System.out.println("\n\n\n\n\3\n");
+        System.out.println(obj);
+        System.out.println("\n\n\n\n\n");
+        if (employmentService.findOneWorker(id) != null) {
+            JSONArray EmpArray = new JSONArray();
+            for (Employment temp : employmentService.findOneWorker(id)) EmpArray.add(temp);
+            obj.put("Employment", EmpArray);
+        }
+        return obj;
     }
 
     /**
