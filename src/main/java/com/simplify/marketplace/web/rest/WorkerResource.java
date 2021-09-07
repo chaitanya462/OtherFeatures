@@ -254,6 +254,12 @@ public class WorkerResource {
         return ResponseUtil.wrapOrNotFound(workerDTO);
     }
 
+    @GetMapping("/workers/get/{id}")
+    public ResponseEntity<Worker> getWorkerByUserId(@PathVariable Long id) {
+        Optional<Worker> worker = workerRepository.findByUserId(id);
+        return ResponseUtil.wrapOrNotFound(worker);
+    }
+    
     @GetMapping("/workers/profile/{id}")
     public JSONObject getProfile(@PathVariable Long id) {
         log.debug("REST request to get Worker : {}", id);
