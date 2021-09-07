@@ -152,6 +152,10 @@ public class LocationResource {
         locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationDTO.setUpdatedAt(LocalDate.now());
         LocationDTO result = locationService.save(locationDTO);
+        //        Long Emp_id = locationDTO.getEmployment().getId();
+        //        Employment employment = employmentService.getEmploymentById(Emp_id);
+        //        Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, locationDTO.getId().toString()))
