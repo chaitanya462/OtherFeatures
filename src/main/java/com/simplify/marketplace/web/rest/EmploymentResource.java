@@ -85,11 +85,14 @@ public class EmploymentResource {
 
         EmploymentDTO result = employmentService.save(employmentDTO);
 
-        String Workerid = employmentDTO.getWorker().getId().toString();
-        ElasticWorker elasticworker = rep1.findById(Workerid).get();
-        elasticworker.setEmployments(employmentService.getSetOfEmployment(result));
+        Employment employment = employmentService.getEmploymentById(result.getId());
+        if (employment.getWorker() != null) {
+            Long workerid = employment.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addEmployment(employment);
 
-        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
 
         return ResponseEntity
             .created(new URI("/api/employments/" + result.getId()))

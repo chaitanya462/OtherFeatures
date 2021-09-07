@@ -51,5 +51,6 @@ public interface EmploymentService {
      * @param id the id of the entity.
      */
     void delete(Long id);
-    Set<Employment> getSetOfEmployment(EmploymentDTO employmentDTO);
+
+    public Employment getEmploymentById(Long id);
 }
