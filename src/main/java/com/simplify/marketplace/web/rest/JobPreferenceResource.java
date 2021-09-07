@@ -88,11 +88,11 @@ public class JobPreferenceResource {
         jobPreferenceDTO.setCreatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
 
-        String Workerid = jobPreferenceDTO.getWorker().getId().toString();
-        ElasticWorker elasticworker = rep1.findById(Workerid).get();
-        elasticworker.setJobPreferences(jobPreferenceService.getJobPreferences(result));
+        // String Workerid = jobPreferenceDTO.getWorker().getId().toString();
+        // ElasticWorker elasticworker = rep1.findById(Workerid).get();
+        // elasticworker.setJobPreferences(jobPreferenceService.getJobPreferences(result));
 
-        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        // rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
 
         return ResponseEntity
             .created(new URI("/api/job-preferences/" + result.getId()))

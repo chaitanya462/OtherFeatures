@@ -85,11 +85,14 @@ public class EmploymentResource {
 
         EmploymentDTO result = employmentService.save(employmentDTO);
 
-        String Workerid = employmentDTO.getWorker().getId().toString();
-        ElasticWorker elasticworker = rep1.findById(Workerid).get();
-        elasticworker.setEmployments(employmentService.getSetOfEmployment(result));
+        Employment employment = employmentRepository.findById(result.getId()).get();
+        if (employment.getWorker() != null) {
+            Long workerid = employment.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addEmployment(employment);
 
-        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
 
         return ResponseEntity
             .created(new URI("/api/employments/" + result.getId()))
@@ -125,7 +128,27 @@ public class EmploymentResource {
         }
         employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         employmentDTO.setUpdatedAt(LocalDate.now());
+
+        Employment prevEmployment = employmentRepository.findById(employmentDTO.getId()).get();
+
         EmploymentDTO result = employmentService.save(employmentDTO);
+        Employment updatedEmployment = employmentRepository.findById(result.getId()).get();
+
+        if (
+            prevEmployment.getWorker() != null && !Objects.equals(updatedEmployment.getWorker().getId(), prevEmployment.getWorker().getId())
+        ) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevEmployment.getWorker().getId().toString()).get();
+            prevEmployment.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removeEmployment(prevEmployment);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevEmployment.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedEmployment.getWorker().getId().toString()).get();
+        elasticworker.removeEmployment(prevEmployment);
+        elasticworker.addEmployment(updatedEmployment);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employmentDTO.getId().toString()))
@@ -213,7 +236,16 @@ public class EmploymentResource {
     @DeleteMapping("/employments/{id}")
     public ResponseEntity<Void> deleteEmployment(@PathVariable Long id) {
         log.debug("REST request to delete Employment : {}", id);
+        Employment emp = employmentRepository.findById(id).get();
         employmentService.delete(id);
+
+        Long elastic_id = emp.getWorker().getId();
+        emp.setWorker(null);
+
+        ElasticWorker e = rep1.findById(elastic_id.toString()).get();
+        e.removeEmployment(emp);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", e);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
