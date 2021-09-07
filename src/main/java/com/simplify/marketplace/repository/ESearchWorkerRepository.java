@@ -155,7 +155,7 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "      \"should\": [\r\n" +
         "        {\r\n" +
         "          \"multi_match\": {\r\n" +
-        "            \"query\": \"?2\",\r\n" +
+        "            \"query\": \"?3\",\r\n" +
         "            \"type\": \"phrase\",\r\n" +
         "            \"boost\": 100, \r\n" +
         "            \"fields\": [\"*\"]\r\n" +
@@ -164,7 +164,7 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "          {\r\n" +
         "          \r\n" +
         "            \"query_string\": {\r\n" +
-        "            \"query\": \"?2\",\r\n" +
+        "            \"query\": \"?3\",\r\n" +
         "            \"boost\": 10, \r\n" +
         "            \"default_operator\": \"AND\"\r\n" +
         "             \r\n" +
@@ -177,7 +177,7 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "            {\r\n" +
         "           \r\n" +
         "          \"query_string\": {\r\n" +
-        "            \"query\": \"?2\",\r\n" +
+        "            \"query\": \"?3\",\r\n" +
         "            \"boost\": 1, \r\n" +
         "            \"default_operator\": \"OR\"\r\n" +
         "             \r\n" +
@@ -192,7 +192,7 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "       ,\r\n" +
         "       {\r\n" +
         "         \"match\": {\r\n" +
-        "                 \"jobPreferences.locationPrefrences.city\": \"?3\"\r\n" +
+        "                 \"jobPreferences.locationPrefrences.city\": \"?2\"\r\n" +
         "               }\r\n" +
         "       }\r\n" +
         "     ]\r\n" +

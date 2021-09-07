@@ -13,8 +13,6 @@ import java.util.Set;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -23,8 +21,13 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Document(indexName = "elasticsearchworkerindex")
 //@Mapping(mappingPath = "/ElasticSearch/mappings/mapping.json")
-//@Setting(settingPath="/ElasticSearch/settings/setting.json")
+//@Setting(settingPath = "/ElasticSearch/settings/setting.json")
 public class ElasticWorker implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     @Id
     private String id;
@@ -50,6 +53,24 @@ public class ElasticWorker implements Serializable {
     private Boolean isActive;
 
     private String createdBy;
+
+    private String Category;
+
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String category) {
+        Category = category;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonSerialize(using = LocalDateSerializer.class)
@@ -81,7 +102,6 @@ public class ElasticWorker implements Serializable {
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
     private Set<Certificate> certificates = new HashSet<>();
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true) // value = { "locations","worker" }
     private Set<Employment> employments = new HashSet<>();
 
