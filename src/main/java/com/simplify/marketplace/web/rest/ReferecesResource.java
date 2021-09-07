@@ -1,11 +1,14 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.File;
+import com.simplify.marketplace.domain.Refereces;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.ReferecesRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.ReferecesService;
 import com.simplify.marketplace.service.UserService;
+import com.simplify.marketplace.service.dto.FileDTO;
 import com.simplify.marketplace.service.dto.ReferecesDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -14,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -49,9 +53,6 @@ public class ReferecesResource {
 
     @Autowired
     RabbitTemplate rabbit_msg;
-
-    @Autowired
-    WorkerRepository wrepo;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -94,6 +95,7 @@ public class ReferecesResource {
 
             rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         }
+
         return ResponseEntity
             .created(new URI("/api/refereces/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -204,13 +206,6 @@ public class ReferecesResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    @GetMapping("/refereces/worker/{workerid}")
-    public List<Refereces> getworkerReference(@PathVariable Long workerid) {
-        log.debug("REST request to get Reference : {}", workerid);
-        List<Refereces> refereces = referecesService.findOneWorker(workerid);
-        return refereces;
-    }
-
     /**
      * {@code GET  /refereces/:id} : get the "id" refereces.
      *
@@ -233,6 +228,7 @@ public class ReferecesResource {
     @DeleteMapping("/refereces/{id}")
     public ResponseEntity<Void> deleteRefereces(@PathVariable Long id) {
         log.debug("REST request to delete Refereces : {}", id);
+
         Refereces references = referecesRepository.findById(id).get();
         referecesService.delete(id);
 
@@ -243,6 +239,7 @@ public class ReferecesResource {
         elastic_worker.removeRefereces(references);
 
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", elastic_worker);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

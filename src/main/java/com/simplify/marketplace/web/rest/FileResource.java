@@ -229,6 +229,7 @@ public class FileResource {
     @DeleteMapping("/files/{id}")
     public ResponseEntity<Void> deleteFile(@PathVariable Long id) {
         log.debug("REST request to delete File : {}", id);
+
         File file = fileRepository.findById(id).get();
         fileService.delete(id);
 
@@ -239,6 +240,7 @@ public class FileResource {
         elasticworker.removeFile(file);
 
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

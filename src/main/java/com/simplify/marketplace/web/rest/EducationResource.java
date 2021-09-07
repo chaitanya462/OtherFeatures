@@ -247,6 +247,7 @@ public class EducationResource {
         eworker.removeEducation(edu);
 
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", eworker);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

@@ -95,6 +95,7 @@ public class CertificateResource {
 
             rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         }
+
         return ResponseEntity
             .created(new URI("/api/certificates/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -249,6 +250,7 @@ public class CertificateResource {
         e.removeCertificate(certificate);
 
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", e);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

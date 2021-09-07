@@ -29,6 +29,7 @@ public class ClientDTO implements Serializable {
     private LocalDate startDate;
 
     private UserDTO user;
+
     private String createdBy;
 
     private LocalDate createdAt;
