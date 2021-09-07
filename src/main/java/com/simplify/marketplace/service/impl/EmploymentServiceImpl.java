@@ -102,32 +102,4 @@ public class EmploymentServiceImpl implements EmploymentService {
         log.debug("Request to delete Employment : {}", id);
         employmentRepository.deleteById(id);
     }
-
-    public Set<Employment> getSetOfEmployment(EmploymentDTO employmentDTO) {
-        String Workerid = employmentDTO.getWorker().getId().toString();
-
-        ElasticWorker elasticWorker = elasticworkerrepo.findById(Workerid).get();
-
-        Employment employment = new Employment();
-
-        employment.setCompanyName(employmentDTO.getCompanyName());
-        employment.setDescription(employmentDTO.getDescription());
-        employment.setEndDate(employmentDTO.getEndDate());
-        employment.setId(employmentDTO.getId());
-        employment.setIsCurrent(employmentDTO.getIsCurrent());
-        employment.setJobTitle(employmentDTO.getJobTitle());
-        employment.setLastSalary(employmentDTO.getLastSalary());
-        employment.setStartDate(employmentDTO.getStartDate());
-
-        employment.setCompany(clientRepo.findById(employmentDTO.getCompany().getId()).get());
-
-        //employment.setLocations(locRepo.findById(employmentDTO.get));
-
-        employment.setWorker(workerrepo.findById(employmentDTO.getWorker().getId()).get());
-
-        Set<Employment> set = elasticWorker.getEmployments();
-        set.add(employment);
-
-        return set;
-    }
 }
