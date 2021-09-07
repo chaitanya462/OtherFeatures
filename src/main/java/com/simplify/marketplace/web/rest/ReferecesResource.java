@@ -83,13 +83,17 @@ public class ReferecesResource {
         referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         referecesDTO.setUpdatedAt(LocalDate.now());
         referecesDTO.setCreatedAt(LocalDate.now());
+
         ReferecesDTO result = referecesService.save(referecesDTO);
 
-        String Workerid = referecesDTO.getWorker().getId().toString();
-        ElasticWorker elasticworker = rep1.findById(Workerid).get();
-        elasticworker.setRefereces(referecesService.getRefereces(result));
+        Refereces refereces = referecesRepository.findById(result.getId()).get();
+        if (refereces.getWorker() != null) {
+            Long workerid = refereces.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addRefereces(refereces);
 
-        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
         return ResponseEntity
             .created(new URI("/api/refereces/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -122,9 +126,27 @@ public class ReferecesResource {
         if (!referecesRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        referecesDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         referecesDTO.setUpdatedAt(LocalDate.now());
+
+        Refereces prevRefereces = referecesRepository.findById(referecesDTO.getId()).get();
+
         ReferecesDTO result = referecesService.save(referecesDTO);
+        Refereces updatedRefereces = referecesRepository.findById(result.getId()).get();
+
+        if (prevRefereces.getWorker() != null && !Objects.equals(updatedRefereces.getWorker().getId(), prevRefereces.getWorker().getId())) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevRefereces.getWorker().getId().toString()).get();
+            prevRefereces.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removeRefereces(prevRefereces);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevRefereces.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedRefereces.getWorker().getId().toString()).get();
+        elasticworker.removeRefereces(prevRefereces);
+        elasticworker.addRefereces(updatedRefereces);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, referecesDTO.getId().toString()))
@@ -211,7 +233,16 @@ public class ReferecesResource {
     @DeleteMapping("/refereces/{id}")
     public ResponseEntity<Void> deleteRefereces(@PathVariable Long id) {
         log.debug("REST request to delete Refereces : {}", id);
+        Refereces references = referecesRepository.findById(id).get();
         referecesService.delete(id);
+
+        Long curr_id = references.getWorker().getId();
+        references.setWorker(null);
+
+        ElasticWorker elastic_worker = rep1.findById(curr_id.toString()).get();
+        elastic_worker.removeRefereces(references);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elastic_worker);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

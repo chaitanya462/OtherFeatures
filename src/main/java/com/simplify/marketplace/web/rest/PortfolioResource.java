@@ -84,11 +84,14 @@ public class PortfolioResource {
         portfolioDTO.setCreatedAt(LocalDate.now());
         PortfolioDTO result = portfolioService.save(portfolioDTO);
 
-        String Workerid = portfolioDTO.getWorker().getId().toString();
-        ElasticWorker e = rep1.findById(Workerid).get();
-        e.setPortfolios(portfolioService.getPortfolios(result));
+        Portfolio portfolio = portfolioRepository.findById(result.getId()).get();
+        if (portfolio.getWorker() != null) {
+            Long workerid = portfolio.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addPortfolio(portfolio);
 
-        rabbit_msg.convertAndSend("topicExchange1", "routingKey", e);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
         return ResponseEntity
             .created(new URI("/api/portfolios/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -123,8 +126,24 @@ public class PortfolioResource {
         }
         portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         portfolioDTO.setUpdatedAt(LocalDate.now());
+        Portfolio prevPortfolio = portfolioRepository.findById(portfolioDTO.getId()).get();
 
         PortfolioDTO result = portfolioService.save(portfolioDTO);
+        Portfolio updatedPortfolio = portfolioRepository.findById(result.getId()).get();
+
+        if (prevPortfolio.getWorker() != null && !Objects.equals(updatedPortfolio.getWorker().getId(), prevPortfolio.getWorker().getId())) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevPortfolio.getWorker().getId().toString()).get();
+            prevPortfolio.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removePortfolio(prevPortfolio);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevPortfolio.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedPortfolio.getWorker().getId().toString()).get();
+        elasticworker.removePortfolio(prevPortfolio);
+        elasticworker.addPortfolio(updatedPortfolio);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, portfolioDTO.getId().toString()))
@@ -212,7 +231,16 @@ public class PortfolioResource {
     @DeleteMapping("/portfolios/{id}")
     public ResponseEntity<Void> deletePortfolio(@PathVariable Long id) {
         log.debug("REST request to delete Portfolio : {}", id);
+        Portfolio portfolio = portfolioRepository.findById(id).get();
+
         portfolioService.delete(id);
+        Long curr_id = portfolio.getWorker().getId();
+        ElasticWorker elasicWorker = rep1.findById(curr_id.toString()).get();
+        portfolio.setWorker(null);
+
+        elasicWorker.removePortfolio(portfolio);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasicWorker);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
