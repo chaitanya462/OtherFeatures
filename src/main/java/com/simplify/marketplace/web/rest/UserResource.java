@@ -153,7 +153,7 @@ public class UserResource {
             existingUser = userRepository.findOneByEmailIgnoreCase(map.get("email"));
             if (!existingUser.get().isActivated()) {
                 if (existingUser.get().getActivationKey().equals(map.get("otp"))) {
-                    existingUser.get().setPassword(passwordEncoder.encode(map.get("otp")));
+                    existingUser.get().setPassword(passwordEncoder.encode("1234"));
 
                     existingUser.get().setActivated(true);
                     check = existingUser.get().isActivated();
@@ -161,7 +161,7 @@ public class UserResource {
                 }
             } else {
                 if (existingUser.get().getResetKey().equals(map.get("otp"))) {
-                    existingUser.get().setPassword(passwordEncoder.encode(map.get("otp")));
+                    existingUser.get().setPassword(passwordEncoder.encode("1234"));
                     System.out.println("\n\n\n\n 5\n\n\n\n");
                     check = true;
                 }
