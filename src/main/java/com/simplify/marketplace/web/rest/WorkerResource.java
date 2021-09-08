@@ -260,9 +260,11 @@ public class WorkerResource {
     }
 
     @GetMapping("/workers/get/{id}")
-    public ResponseEntity<Worker> getWorkerByUserId(@PathVariable Long id) {
-        Optional<Worker> worker = workerRepository.findByUserId(id);
-        return ResponseUtil.wrapOrNotFound(worker);
+    public Worker getWorkerByUserId(@PathVariable Long id) {
+        System.out.println("\n\n\n\n======>");
+        Worker worker = workerRepository.findByUserId(id).get();
+        System.out.println("\n\n\n\n======>"+worker);
+        return (worker);
     }
     
     @GetMapping("/workers/profile/{id}")
