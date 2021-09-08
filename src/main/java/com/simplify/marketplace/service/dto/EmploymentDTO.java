@@ -28,6 +28,8 @@ public class EmploymentDTO implements Serializable {
 
     private String description;
 
+    private String employeeLocations;
+
     private ClientDTO company;
 
     private WorkerDTO worker;
