@@ -84,7 +84,6 @@ public class CertificateResource {
         }
         certificateDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
         certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
-        certificateDTO.setUpdatedAt(LocalDate.now());
         certificateDTO.setCreatedAt(LocalDate.now());
         CertificateDTO result = certificateService.save(certificateDTO);
 

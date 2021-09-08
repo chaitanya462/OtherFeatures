@@ -85,7 +85,8 @@ public class EmploymentResource {
 
         EmploymentDTO result = employmentService.save(employmentDTO);
 
-        Employment employment = employmentRepository.findById(result.getId()).get();
+        Employment employment = employmentService.getEmploymentById(result.getId());
+
         if (employment.getWorker() != null) {
             Long workerid = employment.getWorker().getId();
             ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();

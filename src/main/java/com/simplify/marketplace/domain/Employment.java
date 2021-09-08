@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
@@ -26,6 +27,121 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Data
 public class Employment implements Serializable {
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((companyName == null) ? 0 : companyName.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((employeeLocations == null) ? 0 : employeeLocations.hashCode());
+        result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((isCurrent == null) ? 0 : isCurrent.hashCode());
+        result = prime * result + ((jobTitle == null) ? 0 : jobTitle.hashCode());
+        result = prime * result + ((lastSalary == null) ? 0 : lastSalary.hashCode());
+        result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return (
+            "Employment [id=" +
+            id +
+            ", jobTitle=" +
+            jobTitle +
+            ", companyName=" +
+            companyName +
+            ", startDate=" +
+            startDate +
+            ", endDate=" +
+            endDate +
+            ", isCurrent=" +
+            isCurrent +
+            ", employeeLocations=" +
+            employeeLocations +
+            ", lastSalary=" +
+            lastSalary +
+            ", description=" +
+            description +
+            ", createdBy=" +
+            createdBy +
+            ", createdAt=" +
+            createdAt +
+            ", updatedBy=" +
+            updatedBy +
+            ", updatedAt=" +
+            updatedAt +
+            ", locations=" +
+            locations +
+            ", company=" +
+            company +
+            ", worker=" +
+            worker +
+            "]"
+        );
+    }
+
+    public Set<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Set<Location> locations) {
+        this.locations = locations;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Employment other = (Employment) obj;
+        if (companyName == null) {
+            if (other.companyName != null) return false;
+        } else if (!companyName.equals(other.companyName)) return false;
+        if (createdAt == null) {
+            if (other.createdAt != null) return false;
+        } else if (!createdAt.equals(other.createdAt)) return false;
+        if (createdBy == null) {
+            if (other.createdBy != null) return false;
+        } else if (!createdBy.equals(other.createdBy)) return false;
+        if (description == null) {
+            if (other.description != null) return false;
+        } else if (!description.equals(other.description)) return false;
+        if (employeeLocations == null) {
+            if (other.employeeLocations != null) return false;
+        } else if (!employeeLocations.equals(other.employeeLocations)) return false;
+        if (endDate == null) {
+            if (other.endDate != null) return false;
+        } else if (!endDate.equals(other.endDate)) return false;
+        if (id == null) {
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
+        if (isCurrent == null) {
+            if (other.isCurrent != null) return false;
+        } else if (!isCurrent.equals(other.isCurrent)) return false;
+        if (jobTitle == null) {
+            if (other.jobTitle != null) return false;
+        } else if (!jobTitle.equals(other.jobTitle)) return false;
+        if (lastSalary == null) {
+            if (other.lastSalary != null) return false;
+        } else if (!lastSalary.equals(other.lastSalary)) return false;
+        if (startDate == null) {
+            if (other.startDate != null) return false;
+        } else if (!startDate.equals(other.startDate)) return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null) return false;
+        } else if (!updatedAt.equals(other.updatedAt)) return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null) return false;
+        } else if (!updatedBy.equals(other.updatedBy)) return false;
+        return true;
+    }
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -38,9 +154,17 @@ public class Employment implements Serializable {
     @Column(name = "company_name")
     private String companyName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "start_date")
     private LocalDate startDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "end_date")
     private LocalDate endDate;
 

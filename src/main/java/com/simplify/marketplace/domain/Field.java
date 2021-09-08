@@ -17,8 +17,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 
-//import org.springframework.data.elasticsearch.annotations.FieldType;
-
 /**
  * A Field.
  */
@@ -50,20 +48,26 @@ public class Field implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
-    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    //    @JsonSerialize(using = LocalDateSerializer.class)
-    //    @JsonDeserialize(using = LocalDateDeserializer.class)
-    //    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(
+        type = org.springframework.data.elasticsearch.annotations.FieldType.Date,
+        format = DateFormat.date
+    )
     @Column(name = "created_at")
     private LocalDate createdAt;
 
     @Column(name = "updated_by")
     private String updatedBy;
 
-    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    //    @JsonSerialize(using = LocalDateSerializer.class)
-    //    @JsonDeserialize(using = LocalDateDeserializer.class)
-    //    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(
+        type = org.springframework.data.elasticsearch.annotations.FieldType.Date,
+        format = DateFormat.date
+    )
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 

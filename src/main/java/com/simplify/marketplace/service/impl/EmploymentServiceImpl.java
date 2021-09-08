@@ -102,4 +102,12 @@ public class EmploymentServiceImpl implements EmploymentService {
         log.debug("Request to delete Employment : {}", id);
         employmentRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Employment getEmploymentById(Long id) {
+        Employment ans = employmentRepository.findById(id).get();
+
+        return ans;
+    }
 }
