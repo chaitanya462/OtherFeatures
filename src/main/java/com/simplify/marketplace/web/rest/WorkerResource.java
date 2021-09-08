@@ -12,6 +12,7 @@ import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
 import com.simplify.marketplace.service.dto.WorkerDTO;
 import com.simplify.marketplace.service.mapper.WorkerMapper;
+import com.simplify.marketplace.service.mapper.UserMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.lang.Exception;
 import java.net.URI;
@@ -53,6 +54,7 @@ public class WorkerResource {
     private CertificateRepository certificateRepository;
     private EmploymentRepository employmentRepository;
     private final WorkerMapper workerMapper;
+    private final UserMapper userMapper;
 
     private UserService userService;
     private JobPreferenceService jobPreferenceService;
@@ -91,7 +93,8 @@ public class WorkerResource {
         WorkerMapper workerMapper,
         JobPreferenceService jobPreferenceService,
         EducationService educationService,
-        EmploymentService employmentService
+        EmploymentService employmentService,
+        UserMapper userMapper
     ) {
         this.workerService = workerService;
         this.workerRepository = workerRepository;
@@ -106,6 +109,7 @@ public class WorkerResource {
         this.jobPreferenceService = jobPreferenceService;
         this.educationService = educationService;
         this.employmentService = employmentService;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -121,6 +125,7 @@ public class WorkerResource {
         if (workerDTO.getId() != null) {
             throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        workerDTO.setUser(userMapper.userToUserDTO(userService.getUserWithAuthorities().get()));
         workerDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedAt(LocalDate.now());
@@ -254,6 +259,12 @@ public class WorkerResource {
         return ResponseUtil.wrapOrNotFound(workerDTO);
     }
 
+    @GetMapping("/workers/get/{id}")
+    public ResponseEntity<Worker> getWorkerByUserId(@PathVariable Long id) {
+        Optional<Worker> worker = workerRepository.findByUserId(id);
+        return ResponseUtil.wrapOrNotFound(worker);
+    }
+    
     @GetMapping("/workers/profile/{id}")
     public JSONObject getProfile(@PathVariable Long id) {
         log.debug("REST request to get Worker : {}", id);
