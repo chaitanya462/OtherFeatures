@@ -1,29 +1,24 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.*;
-import com.simplify.marketplace.domain.Certificate;
 import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.repository.*;
-import com.simplify.marketplace.service.CertificateService;
 import com.simplify.marketplace.service.EducationService;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.JobPreferenceService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
 import com.simplify.marketplace.service.dto.WorkerDTO;
-import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.service.mapper.UserMapper;
+import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
-import java.lang.Exception;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -66,6 +60,9 @@ public class WorkerResource {
 
     @Autowired
     WorkerRepository workerRepo;
+
+    @Autowired
+    RestHighLevelClient client;
 
     private final Logger log = LoggerFactory.getLogger(WorkerResource.class);
 
@@ -131,8 +128,8 @@ public class WorkerResource {
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setCreatedAt(LocalDate.now());
         WorkerDTO result = workerService.save(workerDTO);
-        ElasticWorker ew = new ElasticWorker();
 
+        ElasticWorker ew = new ElasticWorker();
         Worker arr = workerRepository.findOneWithEagerRelationships(result.getId()).get();
         ew.setId(result.getId().toString());
         ew.setFirstName(arr.getFirstName());
@@ -143,8 +140,19 @@ public class WorkerResource {
         ew.setDateOfBirth(arr.getDateOfBirth());
         ew.setIsActive(arr.getIsActive());
         ew.setSkills(arr.getSkills());
-
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
+
+        //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");
+        //		request.routing(obj.getCity());
+        //		Map<String,Object> source = new HashMap<>();
+        //		source.put("name", obj.getName());
+        //		source.put("city",obj.getCity());
+        //		request.source(source);
+        //		IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
+        //
+        //
+        //		System.out.println("\n\n\n\n\n\n\n\n\n\n"+indexResponse+"\n\n\n\n\n\n\n\n\n");
+
         return ResponseEntity
             .created(new URI("/api/workers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -264,7 +272,7 @@ public class WorkerResource {
         Optional<Worker> worker = workerRepository.findByUserId(id);
         return ResponseUtil.wrapOrNotFound(worker);
     }
-    
+
     @GetMapping("/workers/profile/{id}")
     public JSONObject getProfile(@PathVariable Long id) {
         log.debug("REST request to get Worker : {}", id);

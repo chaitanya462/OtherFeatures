@@ -1,12 +1,15 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.repository.CategoryRepository;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.JobPreferenceRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.JobPreferenceService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.JobPreferenceDTO;
+import com.simplify.marketplace.service.mapper.CategoryMapper;
+import com.simplify.marketplace.service.mapper.JobPreferenceMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,6 +41,15 @@ import tech.jhipster.web.util.ResponseUtil;
 public class JobPreferenceResource {
 
     private UserService userService;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @Autowired
+    JobPreferenceMapper jobpreferencesMapper;
 
     private final Logger log = LoggerFactory.getLogger(JobPreferenceResource.class);
 
@@ -88,11 +100,21 @@ public class JobPreferenceResource {
         jobPreferenceDTO.setCreatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
 
-        // String Workerid = jobPreferenceDTO.getWorker().getId().toString();
-        // ElasticWorker elasticworker = rep1.findById(Workerid).get();
-        // elasticworker.setJobPreferences(jobPreferenceService.getJobPreferences(result));
+        System.out.println("\n\n\n\n\n" + jobPreferenceDTO + "\n\n\n\n\n\n");
+        if (jobPreferenceDTO.getWorker() != null) {
+            String Workerid = jobPreferenceDTO.getWorker().getId().toString();
 
-        // rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+            ElasticWorker elasticworker = rep1.findById(Workerid).get();
+
+            Category subCategory = categoryMapper.toEntity(jobPreferenceDTO.getSubCategory());
+            System.out.println("\n\n\n\n\n\n\n" + subCategory + "\n\n\n\n\n");
+            Category ParentCategory = categoryRepository.findById(subCategory.getParent().getId()).get();
+            elasticworker.setCategory(ParentCategory.getName());
+            jobPreferenceDTO.setId(result.getId());
+            elasticworker.addJobPreference(jobpreferencesMapper.toEntity(jobPreferenceDTO));
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
 
         return ResponseEntity
             .created(new URI("/api/job-preferences/" + result.getId()))

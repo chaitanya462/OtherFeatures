@@ -20,8 +20,8 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Document(indexName = "elasticsearchworkerindex")
-//@Mapping(mappingPath = "/ElasticSearch/mappings/mapping.json")
-//@Setting(settingPath = "/ElasticSearch/settings/setting.json")
+@Mapping(mappingPath = "/ElasticSearch/mappings/mapping.json")
+@Setting(settingPath = "/ElasticSearch/settings/setting.json")
 public class ElasticWorker implements Serializable {
 
     /**

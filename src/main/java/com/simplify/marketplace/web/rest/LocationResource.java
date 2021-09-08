@@ -99,23 +99,29 @@ public class LocationResource {
         locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationDTO.setUpdatedAt(LocalDate.now());
         locationDTO.setCreatedAt(LocalDate.now());
-        Employment prevemp = employmentService.getEmploymentById(locationDTO.getEmployment().getId());
-        Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
-        prevemp.setLocations(emplocation);
+        LocationDTO result = null;
 
-        LocationDTO result = locationService.save(locationDTO);
+        if (locationDTO.getEmployment() != null) {
+            Employment prevemp = employmentService.getEmploymentById(locationDTO.getEmployment().getId());
+            Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
+            prevemp.setLocations(emplocation);
 
-        Long workerid = locationDTO.getEmployment().getWorker().getId();
-        ElasticWorker elasticworker = elasticworkerRepo.findById(workerid.toString()).get();
-        prevemp.setWorker(null);
+            result = locationService.save(locationDTO);
 
-        elasticworker.removeEmployment(prevemp);
-        locationDTO.setId(result.getId());
-        prevemp.addLocation(locationMapper.toEntity(locationDTO));
+            Long workerid = locationDTO.getEmployment().getWorker().getId();
+            ElasticWorker elasticworker = elasticworkerRepo.findById(workerid.toString()).get();
+            prevemp.setWorker(null);
 
-        elasticworker.addEmployment(prevemp);
+            elasticworker.removeEmployment(prevemp);
+            locationDTO.setId(result.getId());
+            prevemp.addLocation(locationMapper.toEntity(locationDTO));
 
-        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+            elasticworker.addEmployment(prevemp);
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        } else {
+            result = locationService.save(locationDTO);
+        }
 
         return ResponseEntity
             .created(new URI("/api/locations/" + result.getId()))

@@ -29,6 +29,14 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Data
 public class JobPreference implements Serializable {
 
+    //    public Category getSubCategory() {
+    //		return subCategory;
+    //	}
+    //
+    //	public void setSubCategory(Category subCategory) {
+    //		this.subCategory = subCategory;
+    //	}
+
     private static final long serialVersionUID = 1L;
 
     @Id
