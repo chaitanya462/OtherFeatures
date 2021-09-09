@@ -5,6 +5,7 @@ import com.simplify.marketplace.service.CategoryService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.CategoryDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
+import com.simplify.marketplace.domain.Category;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
@@ -158,6 +159,7 @@ public class CategoryResource {
     public ResponseEntity<List<CategoryDTO>> getAllCategories(Pageable pageable) {
         log.debug("REST request to get a page of Categories");
         Page<CategoryDTO> page = categoryService.findAll(pageable);
+        
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -174,6 +176,26 @@ public class CategoryResource {
         Optional<CategoryDTO> categoryDTO = categoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(categoryDTO);
     }
+
+    //to get all parent categories
+    @GetMapping("/allcategories")
+    public List<Category> getAllcategory() {
+        log.debug("REST request to get all parent Category ");
+        List<Category> categories = categoryRepository.findByIsParent();
+        return categories;
+    }
+
+
+
+
+    //to get subcategories of a particular category
+    @GetMapping("/allsubcategories/{id}")
+    public List<Category> getsubCategories(@PathVariable Long id) {
+        log.debug("REST request to get Category : {}", id);
+        List<Category> subcategories= categoryRepository.findByParentId(id);
+        return subcategories;
+    }
+
 
     /**
      * {@code DELETE  /categories/:id} : delete the "id" category.
