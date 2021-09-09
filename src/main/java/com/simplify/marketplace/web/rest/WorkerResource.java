@@ -2,7 +2,9 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.domain.Certificate;
+import com.simplify.marketplace.domain.Portfolio;
 import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.LocationPrefrence;
 import com.simplify.marketplace.repository.*;
 import com.simplify.marketplace.service.CertificateService;
 import com.simplify.marketplace.service.EducationService;
@@ -13,6 +15,8 @@ import com.simplify.marketplace.service.WorkerService;
 import com.simplify.marketplace.service.dto.WorkerDTO;
 import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.service.mapper.UserMapper;
+import com.simplify.marketplace.repository.LocationPrefrenceRepository;
+import com.simplify.marketplace.repository.PortfolioRepository;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.lang.Exception;
 import java.net.URI;
@@ -54,6 +58,8 @@ public class WorkerResource {
     private EducationRepository educationRepository;
     private CertificateRepository certificateRepository;
     private EmploymentRepository employmentRepository;
+    private LocationPrefrenceRepository locationPrefrenceRepository;
+    private PortfolioRepository portfolioRepository;
     private final WorkerMapper workerMapper;
     private final UserMapper userMapper;
 
@@ -95,7 +101,9 @@ public class WorkerResource {
         JobPreferenceService jobPreferenceService,
         EducationService educationService,
         EmploymentService employmentService,
-        UserMapper userMapper
+        UserMapper userMapper,
+        LocationPrefrenceRepository locationPrefrenceRepository,
+        PortfolioRepository portfolioRepository
     ) {
         this.workerService = workerService;
         this.workerRepository = workerRepository;
@@ -111,6 +119,8 @@ public class WorkerResource {
         this.educationService = educationService;
         this.employmentService = employmentService;
         this.userMapper = userMapper;
+        this.locationPrefrenceRepository = locationPrefrenceRepository;
+        this.portfolioRepository = portfolioRepository;
     }
 
     /**
@@ -280,29 +290,43 @@ public class WorkerResource {
         JSONObject obj = new JSONObject();
         Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
         obj.put("worker", workerService.findOne(id).get());
+        JSONArray job = new JSONArray();
+        JSONArray categArray = new JSONArray();
+        JSONArray locationprefs = new JSONArray();
         if (jobPreferenceService.findOneWorker(id) != null) {
-            JSONArray job = new JSONArray();
-            JSONArray categArray = new JSONArray();
             for (JobPreference temp : jobPreferenceService.findOneWorker(id)) {
+                if(locationPrefrenceRepository.findByJobPreferenceId(temp.getId()) != null){
+                    for(LocationPrefrence x:locationPrefrenceRepository.findByJobPreferenceId(temp.getId())){
+                        locationprefs.add(x);
+                    }
+                    locationprefs.add(locationPrefrenceRepository.findByJobPreferenceId(temp.getId()));
+                }
                 job.add(temp);
                 categArray.add(temp.getSubCategory());
             }
-            obj.put("jobPreference", job);
-            obj.put("category", categArray);
         }
+        obj.put("jobPreference", job);
+        obj.put("category", categArray);
+        obj.put("locationpreference", locationprefs);
+        JSONArray portArray = new JSONArray();
+        if(portfolioRepository.findByWorkerId(id) != null){
+            for(Portfolio temp :portfolioRepository.findByWorkerId(id)){
+                portArray.add(temp);
+            }
+        }
+        obj.put("portfolio", portArray);
+        JSONArray educaArray = new JSONArray();
         if (educationService.findOneWorker(id) != null) {
-            JSONArray educaArray = new JSONArray();
-            for (Education temp : educationService.findOneWorker(id)) educaArray.add(temp);
-            obj.put("Education", educaArray);
+            for (Education temp : educationService.findOneWorker(id)) 
+                educaArray.add(temp);
         }
-        System.out.println("\n\n\n\n\3\n");
-        System.out.println(obj);
-        System.out.println("\n\n\n\n\n");
+        obj.put("Education", educaArray);
+        JSONArray EmpArray = new JSONArray();
         if (employmentService.findOneWorker(id) != null) {
-            JSONArray EmpArray = new JSONArray();
-            for (Employment temp : employmentService.findOneWorker(id)) EmpArray.add(temp);
-            obj.put("Employment", EmpArray);
+            for (Employment temp : employmentService.findOneWorker(id)) 
+                EmpArray.add(temp);
         }
+        obj.put("Employment", EmpArray);
         return obj;
     }
 

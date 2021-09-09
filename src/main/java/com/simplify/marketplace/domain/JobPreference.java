@@ -243,4 +243,40 @@ public class JobPreference implements Serializable {
         this.updatedAt = updatedAt;
         return this;
     }
+    
+@Override
+public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((availableFrom == null) ? 0 : availableFrom.hashCode());
+    result = prime * result + ((availableTo == null) ? 0 : availableTo.hashCode());
+    result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+    result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+    result = prime * result + ((dailyRate == null) ? 0 : dailyRate.hashCode());
+    result = prime * result + ((employmentType == null) ? 0 : employmentType.hashCode());
+    result = prime * result + ((engagementType == null) ? 0 : engagementType.hashCode());
+    result = prime * result + ((fieldValues == null) ? 0 : fieldValues.hashCode());
+    result = prime * result + ((hourPerDay == null) ? 0 : hourPerDay.hashCode());
+    result = prime * result + ((hourPerWeek == null) ? 0 : hourPerWeek.hashCode());
+    result = prime * result + ((hourlyRate == null) ? 0 : hourlyRate.hashCode());
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+    result = prime * result + ((locationType == null) ? 0 : locationType.hashCode());
+    result = prime * result + ((monthlyRate == null) ? 0 : monthlyRate.hashCode());
+    result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+    result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+    result = prime * result + ((worker == null) ? 0 : worker.hashCode());
+    return result;
+}
+
+@Override
+public String toString() {
+    return "JobPreference [id=" + id + ", hourlyRate=" + hourlyRate + ", dailyRate=" + dailyRate + ", monthlyRate="
+            + monthlyRate + ", hourPerDay=" + hourPerDay + ", hourPerWeek=" + hourPerWeek + ", engagementType="
+            + engagementType + ", employmentType=" + employmentType + ", locationType=" + locationType
+            + ", availableFrom=" + availableFrom + ", availableTo=" + availableTo + ", isActive=" + isActive
+            + ", createdBy=" + createdBy + ", createdAt=" + createdAt + ", updatedBy=" + updatedBy + ", updatedAt="
+            + updatedAt +  ", fieldValues=" + fieldValues
+            + ", subCategory=" + subCategory + ", worker=" + worker + "]";
+}
 }

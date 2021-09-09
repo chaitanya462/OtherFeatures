@@ -14,4 +14,6 @@ import org.springframework.stereotype.Repository;
 public interface SkillsMasterRepository extends JpaRepository<SkillsMaster, Long> {
     //@Query("select skillsMaster from SkillsMaster skillsMaster left join fetch skillsMaster.workers where worker.id=:id")
     List<SkillsMaster> findByWorkers_Id(Long id);
+
+    SkillsMaster findBySkillName(String name);
 }

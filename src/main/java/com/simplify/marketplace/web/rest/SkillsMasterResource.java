@@ -5,6 +5,7 @@ import com.simplify.marketplace.repository.SkillsMasterRepository;
 import com.simplify.marketplace.service.SkillsMasterService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.SkillsMasterDTO;
+import com.simplify.marketplace.service.mapper.SkillsMasterMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,19 +44,20 @@ public class SkillsMasterResource {
     private String applicationName;
 
     private final SkillsMasterService skillsMasterService;
+    private final SkillsMasterMapper skillsMasterMapper;
 
     private final SkillsMasterRepository skillsMasterRepository;
 
     public SkillsMasterResource(
         SkillsMasterService skillsMasterService,
         SkillsMasterRepository skillsMasterRepository,
-        UserService userService
-        //SkillsRepository skillsRepository
-    ) {
+        UserService userService,
+        SkillsMasterMapper skillsMasterMapper
+        ) {
         this.skillsMasterService = skillsMasterService;
         this.skillsMasterRepository = skillsMasterRepository;
         this.userService = userService;
-        //this.skillsRepository=skillsRepository;
+        this.skillsMasterMapper = skillsMasterMapper;
     }
 
     /**
@@ -75,7 +77,11 @@ public class SkillsMasterResource {
         skillsMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         skillsMasterDTO.setUpdatedAt(LocalDate.now());
         skillsMasterDTO.setCreatedAt(LocalDate.now());
-        SkillsMasterDTO result = skillsMasterService.save(skillsMasterDTO);
+        SkillsMasterDTO result=null;
+        if( skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null)
+            result = skillsMasterService.save(skillsMasterDTO);
+        else
+            result =  skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
         return ResponseEntity
             .created(new URI("/api/skills-masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

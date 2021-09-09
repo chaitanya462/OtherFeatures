@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+    
     List<Portfolio> findByWorkerId(Long workerid);
 }
