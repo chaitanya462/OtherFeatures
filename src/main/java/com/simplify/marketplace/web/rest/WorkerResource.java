@@ -40,6 +40,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST controller for managing {@link com.simplify.marketplace.domain.Worker}.
@@ -259,14 +260,20 @@ public class WorkerResource {
         return ResponseUtil.wrapOrNotFound(workerDTO);
     }
 
+
     @GetMapping("/workers/get/{id}")
-    public Worker getWorkerByUserId(@PathVariable Long id) {
+    public ResponseEntity<Worker> getWorkerByUserId(@PathVariable Long id) {
         System.out.println("\n\n\n\n======>");
         Worker worker = workerRepository.findByUserId(id).get();
-        System.out.println("\n\n\n\n======>"+worker);
-        return (worker);
+        if(worker != null){
+            return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, worker.getId().toString()))
+					.body(worker);
+        }
+        return ResponseEntity.status(404).body(null);
     }
-    
+
+    @Transactional
     @GetMapping("/workers/profile/{id}")
     public JSONObject getProfile(@PathVariable Long id) {
         log.debug("REST request to get Worker : {}", id);
