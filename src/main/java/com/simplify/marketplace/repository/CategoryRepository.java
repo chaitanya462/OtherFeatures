@@ -1,8 +1,7 @@
 package com.simplify.marketplace.repository;
 
-import java.util.List;
-
 import com.simplify.marketplace.domain.Category;
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 

@@ -99,15 +99,15 @@ public class LocationResource {
         locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationDTO.setUpdatedAt(LocalDate.now());
         locationDTO.setCreatedAt(LocalDate.now());
-        LocationDTO result= null;
 
-        if(locationDTO.getEmployment()!=null)
-        {
-        	Employment prevemp = employmentService.getEmploymentById(locationDTO.getEmployment().getId());
+        LocationDTO result = null;
+
+        if (locationDTO.getEmployment() != null) {
+            Employment prevemp = employmentService.getEmploymentById(locationDTO.getEmployment().getId());
             Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
             prevemp.setLocations(emplocation);
 
-             result = locationService.save(locationDTO);
+            result = locationService.save(locationDTO);
 
             Long workerid = locationDTO.getEmployment().getWorker().getId();
             ElasticWorker elasticworker = elasticworkerRepo.findById(workerid.toString()).get();
@@ -120,10 +120,8 @@ public class LocationResource {
             elasticworker.addEmployment(prevemp);
 
             rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
-        }
-        else
-        {
-        	 result = locationService.save(locationDTO);
+        } else {
+            result = locationService.save(locationDTO);
         }
 
         return ResponseEntity

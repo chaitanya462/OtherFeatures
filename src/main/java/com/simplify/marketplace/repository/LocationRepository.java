@@ -15,5 +15,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
-    Set<Location> findByEmploymentId(Long workerid);
+    Set<Location> findByEmploymentId(Long empId);
 }
