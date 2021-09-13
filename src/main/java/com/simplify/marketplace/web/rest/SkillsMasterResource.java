@@ -1,11 +1,12 @@
 package com.simplify.marketplace.web.rest;
 
+import javax.validation.constraints.NotNull;
 import com.simplify.marketplace.domain.*;
-import com.simplify.marketplace.repository.SkillsMasterRepository;
-import com.simplify.marketplace.service.SkillsMasterService;
+import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.service.*;
 import com.simplify.marketplace.service.UserService;
-import com.simplify.marketplace.service.dto.SkillsMasterDTO;
-import com.simplify.marketplace.service.mapper.SkillsMasterMapper;
+import com.simplify.marketplace.service.dto.*;
+import com.simplify.marketplace.service.mapper.*;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,6 +36,9 @@ import tech.jhipster.web.util.ResponseUtil;
 public class SkillsMasterResource {
 
     private UserService userService;
+    private final WorkerMapper workerMapper;
+    private final WorkerService workerService;
+    private final WorkerRepository workerRepository;
 
     private final Logger log = LoggerFactory.getLogger(SkillsMasterResource.class);
 
@@ -52,12 +56,18 @@ public class SkillsMasterResource {
         SkillsMasterService skillsMasterService,
         SkillsMasterRepository skillsMasterRepository,
         UserService userService,
-        SkillsMasterMapper skillsMasterMapper
+        SkillsMasterMapper skillsMasterMapper,
+        WorkerService workerService,
+        WorkerRepository workerRepository,
+        WorkerMapper workerMapper
         ) {
         this.skillsMasterService = skillsMasterService;
         this.skillsMasterRepository = skillsMasterRepository;
         this.userService = userService;
         this.skillsMasterMapper = skillsMasterMapper;
+        this.workerMapper=workerMapper;
+        this.workerRepository = workerRepository;
+        this.workerService = workerService;
     }
 
     /**
@@ -212,4 +222,5 @@ public class SkillsMasterResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
 }
