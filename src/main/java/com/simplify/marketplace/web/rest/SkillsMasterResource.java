@@ -1,11 +1,11 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.*;
-import com.simplify.marketplace.repository.SkillsMasterRepository;
-import com.simplify.marketplace.service.SkillsMasterService;
+import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.service.*;
 import com.simplify.marketplace.service.UserService;
-import com.simplify.marketplace.service.dto.SkillsMasterDTO;
-import com.simplify.marketplace.service.mapper.SkillsMasterMapper;
+import com.simplify.marketplace.service.dto.*;
+import com.simplify.marketplace.service.mapper.*;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,9 @@ import tech.jhipster.web.util.ResponseUtil;
 public class SkillsMasterResource {
 
     private UserService userService;
+    private final WorkerMapper workerMapper;
+    private final WorkerService workerService;
+    private final WorkerRepository workerRepository;
 
     private final Logger log = LoggerFactory.getLogger(SkillsMasterResource.class);
 
@@ -52,12 +56,18 @@ public class SkillsMasterResource {
         SkillsMasterService skillsMasterService,
         SkillsMasterRepository skillsMasterRepository,
         UserService userService,
-        SkillsMasterMapper skillsMasterMapper
-        ) {
+        SkillsMasterMapper skillsMasterMapper,
+        WorkerService workerService,
+        WorkerRepository workerRepository,
+        WorkerMapper workerMapper
+    ) {
         this.skillsMasterService = skillsMasterService;
         this.skillsMasterRepository = skillsMasterRepository;
         this.userService = userService;
         this.skillsMasterMapper = skillsMasterMapper;
+        this.workerMapper = workerMapper;
+        this.workerRepository = workerRepository;
+        this.workerService = workerService;
     }
 
     /**
@@ -77,11 +87,10 @@ public class SkillsMasterResource {
         skillsMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         skillsMasterDTO.setUpdatedAt(LocalDate.now());
         skillsMasterDTO.setCreatedAt(LocalDate.now());
-        SkillsMasterDTO result=null;
-        if( skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null)
-            result = skillsMasterService.save(skillsMasterDTO);
-        else
-            result =  skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
+        SkillsMasterDTO result = null;
+        if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) result =
+            skillsMasterService.save(skillsMasterDTO); else result =
+            skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
         return ResponseEntity
             .created(new URI("/api/skills-masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

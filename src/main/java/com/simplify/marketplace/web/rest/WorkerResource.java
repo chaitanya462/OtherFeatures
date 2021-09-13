@@ -5,22 +5,37 @@ import com.simplify.marketplace.domain.Certificate;
 import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.domain.LocationPrefrence;
 import com.simplify.marketplace.domain.Portfolio;
+import com.simplify.marketplace.domain.SkillsMaster;
+import com.simplify.marketplace.repository.*;
 import com.simplify.marketplace.repository.*;
 import com.simplify.marketplace.repository.LocationPrefrenceRepository;
+import com.simplify.marketplace.repository.LocationPrefrenceRepository;
 import com.simplify.marketplace.repository.PortfolioRepository;
+import com.simplify.marketplace.repository.PortfolioRepository;
+import com.simplify.marketplace.service.CertificateService;
 import com.simplify.marketplace.service.EducationService;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.JobPreferenceService;
+import com.simplify.marketplace.service.SkillsMasterService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
+import com.simplify.marketplace.service.dto.SkillsMasterDTO;
 import com.simplify.marketplace.service.dto.WorkerDTO;
+import com.simplify.marketplace.service.mapper.SkillsMasterMapper;
+import com.simplify.marketplace.service.mapper.UserMapper;
 import com.simplify.marketplace.service.mapper.UserMapper;
 import com.simplify.marketplace.service.mapper.WorkerMapper;
+import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
+import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
+import java.lang.Exception;
+//>>>>>>> 3b5d60ae34d9a7a0d4901db16867dad23f353ed3
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -57,6 +72,8 @@ public class WorkerResource {
     private PortfolioRepository portfolioRepository;
     private final WorkerMapper workerMapper;
     private final UserMapper userMapper;
+    private SkillsMasterService skillsMasterService;
+    private SkillsMasterMapper skillsMasterMapper;
 
     private UserService userService;
     private JobPreferenceService jobPreferenceService;
@@ -101,7 +118,9 @@ public class WorkerResource {
         EmploymentService employmentService,
         UserMapper userMapper,
         LocationPrefrenceRepository locationPrefrenceRepository,
-        PortfolioRepository portfolioRepository
+        PortfolioRepository portfolioRepository,
+        SkillsMasterService skillsMasterService,
+        SkillsMasterMapper skillsMasterMapper
     ) {
         this.workerService = workerService;
         this.workerRepository = workerRepository;
@@ -119,6 +138,8 @@ public class WorkerResource {
         this.userMapper = userMapper;
         this.locationPrefrenceRepository = locationPrefrenceRepository;
         this.portfolioRepository = portfolioRepository;
+        this.skillsMasterService = skillsMasterService;
+        this.skillsMasterMapper = skillsMasterMapper;
     }
 
     /**
@@ -229,7 +250,6 @@ public class WorkerResource {
         if (!Objects.equals(id, workerDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-
         if (!workerRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
@@ -351,5 +371,40 @@ public class WorkerResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PatchMapping(value = "/worker/skills/{id}", consumes = "application/merge-patch+json")
+    public ResponseEntity<WorkerDTO> UpdateWorkerSkill(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody SkillsMaster skillsMaster
+    ) throws URISyntaxException {
+        if (!workerRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", "worker", "idnotfound");
+        }
+        if (skillsMaster.getId() == null) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
+        worker = worker.addSkill(skillsMaster);
+        Set<SkillsMasterDTO> temp = new HashSet<>();
+        for (SkillsMaster skill : worker.getSkills()) {
+            temp.add(skillsMasterMapper.toDto(skill));
+        }
+        System.out.println("\n\n\n1---\n" + temp);
+        System.out.print("\n\n\n" + worker + "\n\n\n");
+        System.out.print("-----------------------------\n");
+        System.out.print("\n\n\n" + skillsMaster + "\n\n\n");
+        WorkerDTO workerDTO = workerMapper.toDtoId(worker);
+        workerDTO.setSkills(temp);
+        System.out.print("\n\n\n" + workerDTO + "\n\n\n");
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
+        Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workerDTO.getId().toString())
+        );
     }
 }
