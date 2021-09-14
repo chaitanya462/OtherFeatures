@@ -19,6 +19,7 @@ public class PhotoDTO implements Serializable {
     private byte[] pic;
 
     private String picContentType;
+    private WorkerDTO worker;
 
     public Long getId() {
         return id;
@@ -60,6 +61,14 @@ public class PhotoDTO implements Serializable {
         this.picContentType = picContentType;
     }
 
+    public WorkerDTO getWorker() {
+        return worker;
+    }
+
+    public void setWorker(WorkerDTO worker) {
+        this.worker = worker;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,6 +98,7 @@ public class PhotoDTO implements Serializable {
             ", name='" + getName() + "'" +
             ", mimetype='" + getMimetype() + "'" +
             ", pic='" + getPic() + "'" +
+            ", worker=" + getWorker() +
             "}";
     }
 }
